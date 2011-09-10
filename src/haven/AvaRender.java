@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -29,15 +29,19 @@ package haven;
 import static haven.Resource.imgc;
 import javax.media.opengl.GL;
 import java.util.*;
+import java.awt.Font;
 
 public class AvaRender extends TexRT {
+	static Text.Foundry cf = new Text.Foundry(new Font("Serif", Font.PLAIN,10));
     List<Indir<Resource>> layers;
     List<Resource.Image> images;
+	List<Text> lnames = new ArrayList<Text>();
     boolean loading;
     public static final Coord sz = new Coord(212, 249);
     
     public AvaRender(List<Indir<Resource>> layers) {
 	super(sz);
+	lnames.add(cf.render("=Equip List"));
 	setlay(layers);
     }
     
@@ -46,6 +50,13 @@ public class AvaRender extends TexRT {
         this.layers = layers;
         loading = true;
     }
+	
+	public boolean checknames(String s){
+		for(Text t: lnames)
+			if(t.text.equals(s))
+				return true;
+		return false;
+	}
 
     public boolean subrend(GOut g) {
 	if(!loading)
@@ -54,10 +65,17 @@ public class AvaRender extends TexRT {
 	List<Resource.Image> images = new ArrayList<Resource.Image>();
 	loading = false;
 	for(Indir<Resource> r : layers) {
+		String s;
 	    if(r.get() == null)
 		loading = true;
-	    else
-		images.addAll(r.get().layers(imgc));
+	    else{
+			s = r.get().name;
+			s = s.replace("gfx/hud/equip/male/","");
+			s = s.replace("gfx/hud/equip/female/","");
+			images.addAll(r.get().layers(imgc));
+			if(!checknames(s))
+				lnames.add(cf.render(s));
+		}
 	}
 	Collections.sort(images);
 	if(images.equals(this.images))

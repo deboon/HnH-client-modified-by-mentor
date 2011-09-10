@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -31,7 +31,13 @@ import java.awt.image.BufferedImage;
 import javax.media.opengl.GL;
 
 public class ILM extends TexRT {
-    public final static BufferedImage ljusboll;
+	public final static BufferedImage ljusboll;
+    final static int HF = -460100982;
+    final static int FIRE = 1104478640;
+    final static int TORCHPOST = 168393716;
+    final static int CANDLETHINGY = -594851989;
+	final static int SPECIAL = 0;
+	
     OCache oc;
     TexI lbtex;
     Color amb;
@@ -87,12 +93,27 @@ public class ILM extends TexRT {
 		    continue;
 		}
 		Lumin lum = gob.getattr(Lumin.class);
+		switch(gob.resname().hashCode()){
+		case HF: gob.setattr((lum = new Lumin(gob,new Coord(0,0),200,96))); break;
+		case FIRE: gob.setattr((lum = new Lumin(gob,new Coord(0,0),200,192))); break;
+		case TORCHPOST: gob.setattr((lum = new Lumin(gob,new Coord(0,-28),300,192))); break;
+		case CANDLETHINGY: gob.setattr((lum = new Lumin(gob,new Coord(0,-28),400,192))); break;
+		case SPECIAL:
+		{
+			Gob p = oc.getgob(UI.instance.mainview.playergob);
+			if(gob.getneg() != null && p.getneg() != null && // default client seems like it needs this
+			   gob.getneg().bc.x == p.getneg().bc.x &&
+			   gob.getneg().bs.x == p.getneg().bs.x)
+					gob.setattr((lum = new Lumin(gob,new Coord(0,-15),200,192))); break;
+		}
+		}
 		if(lum == null)
 		    continue;
 		Coord sc = gob.sc.add(lum.off).add(-lum.sz, -lum.sz);
 		g.image(lbtex, sc, new Coord(lum.sz * 2, lum.sz * 2));
 	    }
 	}
+	g.chcolor();
 	return(true);
     }
     

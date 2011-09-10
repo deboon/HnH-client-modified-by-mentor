@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -28,12 +28,11 @@ package haven;
 
 public class Lumin extends GAttrib {
     Coord off;
-    int sz, str;
+    int sz;
 	
     public Lumin(Gob g, Coord off, int sz, int str) {
 	super(g);
 	this.off = off;
 	this.sz = sz;
-	this.str = str;
     }
 }

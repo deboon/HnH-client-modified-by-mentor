@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -80,6 +80,9 @@ public class MapView extends Widget implements DTarget, Console.Directory {
     double scales[] = {0.5, 0.66, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2};
     Map<String, Integer> radiuses;
     int beast_check_delay = 0;
+	final static int ONE_TILE = 11;
+	int north = 0,east = 0;
+	boolean ready = false;
     
     public double getScale() {
         return Config.zoom?_scale:1;
@@ -532,8 +535,29 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	map = glob.map;
 	mask = new ILM(MainFrame.getScreenSize(), glob.oc);
 	radiuses = new HashMap<String, Integer>();
+	initd();
     }
     
+	public void initd(){
+    OCache oc = ui.sess.glob.oc;
+    if((oc.getgob(playergob)) != null && oc.getgob(playergob).getc() != null){
+      Coord gotoc = oc.getgob(playergob).getc();
+      //setup movement
+      Coord c1 = new Coord((int)((MainFrame.centerPoint.x+(21))),(int)(((MainFrame.centerPoint.y-(11))))); //Find the Coord we want to move to
+      Coord mc = MapView.s2m(c1.add(MapView.viewoffset(this.sz, this.mc).inv()));
+      
+      north = (mc.y > oc.getgob(playergob).getc().y) ? 1 : -1;
+      
+      
+      c1 = new Coord((int)((MainFrame.centerPoint.x+(21*5))),(int)(((MainFrame.centerPoint.y+(11*5)))));
+      mc = MapView.s2m(c1.add(MapView.viewoffset(this.sz, this.mc).inv()));
+      
+      east = (mc.x > oc.getgob(playergob).getc().x) ? 1 : -1;
+      ready = true;
+
+    }
+	}
+	
     public void resetcam(){
 	if(cam != null){
 	    cam.reset();
@@ -1317,6 +1341,8 @@ public class MapView extends Widget implements DTarget, Console.Directory {
     }
 
     public void draw(GOut og) {
+	if(!ready)
+		initd();
 	if(moveto != null){
 	    wdgmsg("click", moveto, moveto, 1, 0);
 	    moveto = null;

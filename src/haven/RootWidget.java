@@ -76,12 +76,16 @@ public class RootWidget extends ConsoleHost {
 				akeys.get(key).dokey(ui,ev);
 			else if(keys.get(key) != null)
 				keys.get(key).dokey(ui,ev);
+			else if(key != 0)
+				wdgmsg("gk",(int)key);
 		}
 		return(true);
     }
 	
 	public boolean keydown(KeyEvent ev){
 		if(!super.keydown(ev)){
+			if(MenuGrid.instance != null && (MenuGrid.instance.digitbar.checkKey((char)0,ev) || MenuGrid.instance.functionbar.checkKey((char)0,ev) || MenuGrid.instance.numpadbar.checkKey((char)0,ev)))
+				return(true);
 			if(ev.isControlDown() && ckeys.get(ev.getKeyCode()) != null)
 				ckeys.get(ev.getKeyCode()).dokey(ui,ev);
 			else if(skeys.get(ev.getKeyCode()) != null)

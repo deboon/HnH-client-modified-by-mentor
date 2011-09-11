@@ -33,6 +33,7 @@ import haven.Resource.AButton;
 import java.util.*;
 
 public class MenuGrid extends Widget {
+	static MenuGrid instance;
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
     public final static Coord bgsz = bg.sz().add(-1, -1);
     public final static Resource next = Resource.load("gfx/hud/sc-next");
@@ -110,6 +111,7 @@ public class MenuGrid extends Widget {
 		loadBelt((belt-1)%5+10);
 	    }
 	};
+	instance = this;
     }
 	
     private static Comparator<Resource> sorter = new Comparator<Resource>() {

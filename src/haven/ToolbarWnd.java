@@ -475,7 +475,7 @@ public class ToolbarWnd extends Window implements DTarget, DropTarget {
 	return(ttfnd.render(tt, 0));
     }
     
-    private boolean checkKey(char ch, KeyEvent ev) {
+    public boolean checkKey(char ch, KeyEvent ev) {
 	if(!visible){return false;}
 	int code = ev.getKeyCode();
 	int slot = code - key;

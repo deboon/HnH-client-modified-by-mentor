@@ -469,7 +469,7 @@ public class SlenHud extends ConsoleHost implements DTarget, DropTarget, Console
 	return(super.mousewheel(c, amount));
     }
     
-    private void toggleopts() {
+    public void toggleopts() {
 	if(optwnd != null) {
 	    optwnd.wdgmsg("close");
 	} else {
@@ -490,9 +490,9 @@ public class SlenHud extends ConsoleHost implements DTarget, DropTarget, Console
 	if(ch == ' ') {
 	    vc.toggle();
 	    return(true);
-	} else if(ch == ':') {
-	    entercmd();
-	    return(true);
+	} //else if(ch == ':') {
+	  //  entercmd();
+	 //   return(true);
 	/*} else if((ch >= '0') && (ch <= '9')) {
         if (ev.isAltDown()) {
             currentBelt = ch - '0';
@@ -510,9 +510,9 @@ public class SlenHud extends ConsoleHost implements DTarget, DropTarget, Console
             }
         }
 	    return(true);*/
-	} else if(ch == 15) {
-	    toggleopts();
-	}
+	//}// else if(ch == 15) {
+	 //   toggleopts();
+	//}
 	return(super.globtype(ch, ev));
     }
 	

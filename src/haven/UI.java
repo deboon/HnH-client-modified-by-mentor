@@ -56,6 +56,8 @@ public class UI {
     public Console cons = new WidgetConsole();
     private Collection<AfterDraw> afterdraws = null;
 	
+	public KeyBindWnd kbw = null;
+	
     public interface Receiver {
 	public void rcvmsg(int widget, String msg, Object... args);
     }

@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.util.*;
 
 public class Avaview extends Widget {
+	static final String POSKEY = "pava_pos";
     public static final Coord dasz = new Coord(74, 74);
     private Coord asz;
     int avagob;
@@ -39,9 +40,15 @@ public class Avaview extends Widget {
     public static final Coord unborder = new Coord(2, 2);
     public static final Tex missing = Resource.loadtex("gfx/hud/equip/missing");
 	
+	boolean dm = false;
+	Coord doff;
+	
     static {
 	Widget.addtype("av", new WidgetFactory() {
 		public Widget create(Coord c, Widget parent, Object[] args) {
+			if(UI.instance.mainview != null && UI.instance.mainview.playergob == (Integer)args[0]){
+				c = new Coord(Config.window_props.getProperty(POSKEY,c.toString()));
+			}
 		    return(new Avaview(c, parent, (Integer)args[0]));
 		}
 	    });
@@ -130,7 +137,45 @@ public class Avaview extends Widget {
     }
 	
     public boolean mousedown(Coord c, int button) {
-	wdgmsg("click", button);
-	return(true);
+		switch(button){
+		case 1: System.out.printf("PARENT %s",parent);
+				ui.grabmouse(this);
+				dm = true;
+				doff = c;
+				wdgmsg("click", button); break;
+		case 3: if(avagob > 0 && ui.sess.glob.oc.getgob(avagob).getattr(Avatar.class) != null){
+					new XAvaGear(this.c.add(c),ui.root,avagob);
+				} else if(myown != null){
+					new XAvaGear(this.c.add(c),ui.root,myown);
+				}
+		}
+		return(true);
+    }
+	
+	public boolean mouseup(Coord c,int button){
+		if(dm){
+			ui.grabmouse(null);
+			dm = false;
+			if(ui.mainview != null && avagob == ui.mainview.playergob){
+				Config.setWindowOpt(POSKEY,this.c.toString());
+			} else if(parent instanceof Partyview) {
+				((Partyview)parent).saveparty();
+			}
+		} else {
+			super.mouseup(c,button);
+		}
+		return(true);
+	}
+	
+    public void mousemove(Coord c) {
+		if(dm) {
+			if(ui.mainview != null && avagob == ui.mainview.playergob){
+				this.c = this.c.add(c.add(doff.inv()));
+			} else if(parent instanceof Partyview)  {
+				((Partyview)parent).moveparty(c.add(doff.inv()));
+			} 
+		} else {
+		    super.mousemove(c);
+		}
     }
 }

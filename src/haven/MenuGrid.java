@@ -33,6 +33,7 @@ import haven.Resource.AButton;
 import java.util.*;
 
 public class MenuGrid extends Widget {
+	final static String POSKEY = "menugrid_pos";
 	static MenuGrid instance;
     public final static Tex bg = Resource.loadtex("gfx/hud/invsq");
     public final static Coord bgsz = bg.sz().add(-1, -1);
@@ -47,10 +48,14 @@ public class MenuGrid extends Widget {
     public ToolbarWnd functionbar;
     public ToolbarWnd numpadbar;
 	
+	boolean dm = false;
+	Coord doff;
+	
     static {
 	Widget.addtype("scm", new WidgetFactory() {
 		public Widget create(Coord c, Widget parent, Object[] args) {
-		    return(new MenuGrid(c, parent));
+		   c = new Coord(Config.window_props.getProperty(POSKEY,UI.instance.slen.c.add(c).toString()));
+		   return(new MenuGrid(c, UI.instance.root));
 		}
 	    });
     }
@@ -230,11 +235,19 @@ public class MenuGrid extends Widget {
 	if((button == 1) && (h != null)) {
 	    pressed = h;
 	    ui.grabmouse(this);
+		doff = c;
+	} else if(button == 3){
+		dm = true;
+		ui.grabmouse(this);
+		doff = c;
 	}
 	return(true);
     }
 	
     public void mousemove(Coord c) {
+		if(dm){
+			this.c = this.c.add(c.add(doff.inv()));
+		} 
 	if((dragging == null) && (pressed != null)) {
 	    Resource h = bhit(c);
 	    if(h != pressed)
@@ -330,6 +343,8 @@ public class MenuGrid extends Widget {
 	}
 	use(null);
     }
+	
+
     
     public boolean mouseup(Coord c, int button) {
 	Resource h = bhit(c);
@@ -343,6 +358,10 @@ public class MenuGrid extends Widget {
 		pressed = null;
 	    }
 	    ui.grabmouse(null);
+	} else if(button == 3 && dm){
+		    ui.grabmouse(null);
+		    dm = false;
+		    Config.setWindowOpt(POSKEY, this.c.toString());
 	}
 	updlayout();
 	return(true);

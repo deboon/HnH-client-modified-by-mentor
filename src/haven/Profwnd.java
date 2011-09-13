@@ -57,6 +57,7 @@ public class Profwnd extends HWindow {
 	else
 	    mt = 50000000;
 	g.image(prof.draw(h, mt / h), new Coord(10, 10));
+	super.draw(g);
     }
     
     public String tooltip(Coord c, boolean again) {

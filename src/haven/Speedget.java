@@ -29,11 +29,15 @@ package haven;
 import java.awt.Color;
 
 public class Speedget extends Widget {
+	static final String POSKEY = "speedget_pos";
     public static final Tex imgs[][];
     public static final Coord tsz;
     public static final Color pspdc = new Color(160,255,160);
     private int cur, max, pspd;
     
+	boolean dm = false;
+	Coord doff;
+	
     static {
 	imgs = new Tex[4][3];
 	String[] names = {"crawl", "walk", "run", "sprint"};
@@ -50,6 +54,7 @@ public class Speedget extends Widget {
 		public Widget create(Coord c, Widget parent, Object[] args) {
 		    int cur = (Integer)args[0];
 		    int max = (Integer)args[1];
+			c = new Coord(Config.window_props.getProperty(POSKEY,c.toString()));
 		    return(new Speedget(c, parent, cur, max));
 		}
 	    });
@@ -94,7 +99,14 @@ public class Speedget extends Widget {
     }
     
     public boolean mousedown(Coord c, int button) {
+		parent.setfocus(this);
+		raise();
 	int x = 0;
+	if(button == 1){
+		dm = true;
+		ui.grabmouse(this);
+		doff = c;
+	}	
 	for(int i = 0; i < 4; i++) {
 	    x += imgs[i][0].sz().x;
 	    if(c.x < x) {
@@ -104,6 +116,24 @@ public class Speedget extends Widget {
 	}
 	return(true);
     }
+	
+	public boolean mouseup(Coord c,int button){
+		if(button == 1){
+			dm = false;
+			ui.grabmouse(null);
+			Config.setWindowOpt(POSKEY,this.c.toString());
+		}
+		super.mouseup(c,button);
+		return(true);
+	}	
+	
+	public void mousemove(Coord c){
+		if(dm){
+			this.c = this.c.add(c.add(doff.inv()));
+		} else {
+			super.mousemove(c);
+		}
+	}
     
     public void setspeed(int speed, boolean player){
 	wdgmsg("set", speed);

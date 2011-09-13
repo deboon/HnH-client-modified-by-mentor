@@ -29,6 +29,7 @@ package haven;
 import java.awt.Color;
 
 public class Bufflist extends Widget {
+	static final String POSKEY = "buff_pos";
     static Tex frame = Resource.loadtex("gfx/hud/buffs/frame");
     static Tex cframe = Resource.loadtex("gfx/hud/buffs/cframe");
     static final Coord imgoff = new Coord(3, 3);
@@ -36,10 +37,14 @@ public class Bufflist extends Widget {
     static final Coord ametersz = new Coord(30, 2);
     static final int margin = 2;
     static final int num = 5;
+	
+	boolean dm;
+	Coord doff;
     
     static {
         Widget.addtype("buffs", new WidgetFactory() {
             public Widget create(Coord c, Widget parent, Object[] args) {
+				c = new Coord(Config.window_props.getProperty(POSKEY,c.toString()));
                 return(new Bufflist(c, parent));
             }
         });
@@ -138,4 +143,35 @@ public class Bufflist extends Widget {
 	}
 	return(null);
     }
+	
+	public boolean mousedown(Coord c,int button){
+		super.mousedown(c,button);
+		parent.setfocus(this);
+		raise();
+		if(button == 1){
+			ui.grabmouse(this);
+			doff = c;
+			dm = true;
+		}
+		return(true);
+	}
+	
+	public boolean mouseup(Coord c,int button){
+		if(dm){
+			ui.grabmouse(null);
+			dm = false;
+			Config.setWindowOpt(POSKEY,this.c.toString());
+		} else {
+			super.mouseup(c,button);
+		}
+		return(true);
+	}
+	
+	public void mousemove(Coord c){
+		if(dm) {
+		this.c = this.c.add(c.add(doff.inv()));
+		} else {
+		super.mousemove(c);
+		}
+	}
 }

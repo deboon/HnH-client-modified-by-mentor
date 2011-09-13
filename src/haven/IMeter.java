@@ -35,22 +35,29 @@ public class IMeter extends Widget {
     static Coord msz = new Coord(49, 4);
     Resource bg;
     List<Meter> meters;
-    
+    String bgname;
+	
+	boolean dm;
+	Coord doff;
+	
     static {
 	Widget.addtype("im", new WidgetFactory() {
 		public Widget create(Coord c, Widget parent, Object[] args) {
-		    Resource bg = Resource.load((String)args[0]);
+			String bgname = (String)args[0];
+		    Resource bg = Resource.load(bgname);
 		    List<Meter> meters = new LinkedList<Meter>();
 		    for(int i = 1; i < args.length; i += 2)
 			meters.add(new Meter((Color)args[i], (Integer)args[i + 1]));
-		    return(new IMeter(c, parent, bg, meters));
+			c = new Coord(Config.window_props.getProperty(bgname,c.toString()));
+		    return(new IMeter(c, parent, bg,bgname, meters));
 		}
 	    });
     }
     
-    public IMeter(Coord c, Widget parent, Resource bg, List<Meter> meters) {
+    public IMeter(Coord c, Widget parent, Resource bg,String bgname, List<Meter> meters) {
 	super(c, fsz, parent);
 	this.bg = bg;
+	this.bgname = bgname;
 	this.meters = meters;
     }
     
@@ -93,4 +100,35 @@ public class IMeter extends Widget {
 	    super.uimsg(msg, args);
 	}
     }
+	
+	public boolean mousedown(Coord c, int button) {
+		super.mousedown(c,button);
+		parent.setfocus(this);
+		raise();
+		if (button == 1) {
+			ui.grabmouse(this);
+			doff = c;
+			dm = true;
+		}
+		return (true);
+	}
+
+	public boolean mouseup(Coord c, int button) {
+		if (dm) {
+			ui.grabmouse(null);
+			dm = false;
+			Config.setWindowOpt(bgname, this.c.toString());
+		} else {
+			super.mouseup(c, button);
+		}
+		return (true);
+	}
+
+	public void mousemove(Coord c) {
+		if (dm) {
+			this.c = this.c.add(c.add(doff.inv()));
+		} else {
+			super.mousemove(c);
+		}
+	}
 }

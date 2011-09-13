@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class Partyview extends Widget {
+	static final String POSKEY = "partyview_pos";
     int ign;
     Party party = ui.sess.glob.party;
     Map<Integer, Member> om = null;
@@ -42,6 +43,7 @@ public class Partyview extends Widget {
     static {
 	Widget.addtype("pv", new WidgetFactory() {
 		public Widget create(Coord c, Widget parent, Object[] args) {
+			c = new Coord(Config.window_props.getProperty(POSKEY,c.toString()));
 		    return(new Partyview(c, parent, (Integer)args[0]));
 		}
 	    });
@@ -126,4 +128,12 @@ public class Partyview extends Widget {
 	update();
 	super.draw(g);
     }
+	
+	public void moveparty(Coord c){
+		this.c = this.c.add(c);
+	}
+	
+	public void saveparty(){
+		Config.setWindowOpt(POSKEY,this.c.toString());
+	}
 }

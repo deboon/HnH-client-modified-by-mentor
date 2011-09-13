@@ -32,6 +32,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class ComMeter extends Widget {
+	static final String POSKEY = "commeter_pos";
     static Tex sword = Resource.loadtex("gfx/hud/combat/com/offdeff");
     static Text.Foundry intf = new Text.Foundry(new Font("Serif", Font.BOLD, 16));
     static Text.Foundry fnd = new Text.Foundry(new Font("SansSerif", Font.PLAIN, 10));
@@ -45,6 +46,9 @@ public class ComMeter extends Widget {
     static Color offcol = new Color(255, 0, 0), defcol = new Color(0, 0, 255);
     static Tex scales[];
     Fightview fv;
+	
+	boolean dm;
+	Coord doff;
     
     static {
         scales = new Tex[11];
@@ -54,6 +58,7 @@ public class ComMeter extends Widget {
     
     public ComMeter(Coord c, Widget parent, Fightview fv) {
         super(c, sword.sz(), parent);
+		this.c = new Coord(Config.window_props.getProperty(POSKEY,this.c.toString()));
 	this.fv = fv;
     }
     
@@ -88,5 +93,36 @@ public class ComMeter extends Widget {
 	    g.aimage(fnd.render(String.format("%d", rel.off/100)).tex(), ooc.add(25, 2), 0.5, 0.5);
 	    g.aimage(fnd.render(String.format("%d", rel.def/100)).tex(), odc.add(25, 2), 0.5, 0.5);
 	}
+    }
+	
+    public boolean mousedown(Coord c, int button) {
+		super.mousedown(c,button);
+    	parent.setfocus(this);
+    	raise();
+    	if(button == 1) {
+    	    ui.grabmouse(this);
+    	    dm = true;
+    	    doff = c;
+    	}
+    	return(true);
+    }
+    	
+    public boolean mouseup(Coord c, int button) {
+		if(dm) {
+		    ui.grabmouse(null);
+		    dm = false;
+		    Config.setWindowOpt(POSKEY, this.c.toString());
+		}
+		else
+			super.mouseup(c, button);
+		return(true);
+    }
+	
+    public void mousemove(Coord c) {
+
+		if(dm) {
+		    this.c = this.c.add(c.add(doff.inv()));
+		}else
+			super.mousemove(c);
     }
 }

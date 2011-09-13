@@ -31,6 +31,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 public class Cal extends SSWidget {
+	static final String POSKEY = "cal_pos";
     public static final double hbr = 23;
     static BufferedImage bg = Resource.loadimg("gfx/hud/calendar/setting");
     private static final int dx = Utils.imgsz(bg).x / 2;
@@ -44,12 +45,16 @@ public class Cal extends SSWidget {
     Text ttip = null;
     Astronomy current;
 	
+	boolean dm = false;
+	Coord doff;
+	
     static {
 	moon = new BufferedImage[8];
 	for(int i = 0; i < moon.length; i++)
 	    moon[i] = Resource.loadimg(String.format("gfx/hud/calendar/m%02d", i));
 	Widget.addtype("cal", new WidgetFactory() {
 		public Widget create(Coord c, Widget parent, Object[] args) {
+			c = new Coord(Config.window_props.getProperty(POSKEY,c.toString()));
 		    return(new Cal(c, parent));
 		}
 	    });
@@ -80,7 +85,6 @@ public class Cal extends SSWidget {
     }
 	
     public void draw(GOut g) {
-        c.x = MainFrame.centerPoint.x - dx;
 	if(!current.equals(ui.sess.glob.ast))
 	    render();
 	super.draw(g);
@@ -88,5 +92,36 @@ public class Cal extends SSWidget {
     
     public Object tooltip(Coord c, boolean again) {
 	return ttip;
+    }
+	
+    public boolean mousedown(Coord c, int button) {
+		super.mousedown(c,button);
+		parent.setfocus(this);
+    	raise();
+    	if(button == 1) {
+    	    ui.grabmouse(this);
+    	    dm = true;
+    	    doff = c;
+    	    wdgmsg("click",button);
+    	}
+    	return(true);
+    }
+    	
+    public boolean mouseup(Coord c, int button) {
+		if(dm) {
+		    ui.grabmouse(null);
+		    dm = false;
+		    Config.setWindowOpt(POSKEY, this.c.toString());
+		}
+		else
+			super.mouseup(c, button);
+		return(true);
+    }
+	
+    public void mousemove(Coord c) {
+		if(dm) {
+		    this.c = this.c.add(c.add(doff.inv()));
+		}else
+			super.mousemove(c);
     }
 }

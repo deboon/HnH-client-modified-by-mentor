@@ -71,22 +71,42 @@ public class KeyFunction implements IKeyFunction{
 	public static List<IKeyFunction> funcs = new ArrayList<IKeyFunction>();
 	public static KeyFunction MOVE_NORTH = new KeyFunction(MOVE_NORTH_SKEY){
 		public void dokey(UI ui,KeyEvent ev){
-			ui.mainview.wdgmsg("click",Coord.fake,ui.sess.glob.oc.getgob(ui.mainview.playergob).getc().add(0,Config.tiles_per_click*ui.mainview.north*MapView.ONE_TILE),1,ui.modflags());
+			if(ui.keys[translateCode(MOVE_EAST)-1])
+				rel_move(ui,Config.tiles_per_click,Config.tiles_per_click);
+			else if(ui.keys[translateCode(MOVE_WEST)-1])
+				rel_move(ui,-Config.tiles_per_click,Config.tiles_per_click);
+			else
+				rel_move(ui,0,Config.tiles_per_click);			
 		}
 	};
 	public static KeyFunction MOVE_SOUTH = new KeyFunction(MOVE_SOUTH_SKEY){
 		public void dokey(UI ui,KeyEvent ev){
-			ui.mainview.wdgmsg("click",Coord.fake,ui.sess.glob.oc.getgob(ui.mainview.playergob).getc().add(0,-Config.tiles_per_click*ui.mainview.north*MapView.ONE_TILE),1,ui.modflags());
+			if(ui.keys[translateCode(MOVE_EAST)-1])
+				rel_move(ui,Config.tiles_per_click,-Config.tiles_per_click);
+			else if(ui.keys[translateCode(MOVE_WEST)-1])
+				rel_move(ui,-Config.tiles_per_click,-Config.tiles_per_click);
+			else
+				rel_move(ui,0,-Config.tiles_per_click);
 		}
 	};
 	public static KeyFunction MOVE_EAST = new KeyFunction(MOVE_EAST_SKEY) {
 		public void dokey(UI ui,KeyEvent ev){
-			ui.mainview.wdgmsg("click",Coord.fake,ui.sess.glob.oc.getgob(ui.mainview.playergob).getc().add(Config.tiles_per_click*ui.mainview.east*MapView.ONE_TILE,0),1,ui.modflags());
+			if(ui.keys[translateCode(MOVE_NORTH)-1])
+				rel_move(ui,Config.tiles_per_click,Config.tiles_per_click);
+			else if(ui.keys[translateCode(MOVE_SOUTH)-1])
+				rel_move(ui,Config.tiles_per_click,-Config.tiles_per_click);
+			else
+				rel_move(ui,Config.tiles_per_click,0);
 		}
 	};
 	public static KeyFunction MOVE_WEST = new KeyFunction(MOVE_WEST_SKEY) {
 		public void dokey(UI ui,KeyEvent ev){
-			ui.mainview.wdgmsg("click",Coord.fake,ui.sess.glob.oc.getgob(ui.mainview.playergob).getc().add(-Config.tiles_per_click*ui.mainview.east*MapView.ONE_TILE,0),1,ui.modflags());
+			if(ui.keys[translateCode(MOVE_NORTH)-1])
+				rel_move(ui,-Config.tiles_per_click,Config.tiles_per_click);
+			else if(ui.keys[translateCode(MOVE_SOUTH)-1])
+				rel_move(ui,-Config.tiles_per_click,-Config.tiles_per_click);
+			else
+				rel_move(ui,-Config.tiles_per_click,0);
 		}
 	};
 	public static KeyFunction PROFILE_MV = new KeyFunction(PROFILE_MV_SKEY) {
@@ -240,6 +260,56 @@ public class KeyFunction implements IKeyFunction{
 		funcs.add(HIDE);
 		funcs.add(XRAY);
 		funcs.add(NIGHTVISION);
+	}
+	
+	public static void rel_move(UI ui,int x,int y){
+		ui.mainview.wdgmsg("click",Coord.fake,ui.sess.glob.oc.getgob(ui.mainview.playergob).getc().add(x*ui.mainview.east*MapView.ONE_TILE,y*ui.mainview.north*MapView.ONE_TILE),1,ui.modflags());
+	}	
+	
+	public static int translateCode(KeyFunction kf){
+		switch(kf.special){
+		case SPECIAL:
+		case CTRL:  return kf.key;
+		case ALT:
+		case NORMAL: if(kf.key >= 97 && kf.key <= 122)
+					   return kf.key -= 32;
+				switch((char)kf.key){
+				case '~':
+				case '`': return KeyEvent.VK_BACK_QUOTE;
+				case '!': return KeyEvent.VK_EXCLAMATION_MARK;
+				case '@': return KeyEvent.VK_AT;
+				case '#': return KeyEvent.VK_3;
+				case '$': return KeyEvent.VK_DOLLAR;
+				case '%': return KeyEvent.VK_5;
+				case '^': return KeyEvent.VK_CIRCUMFLEX;
+				case '&': return KeyEvent.VK_AMPERSAND;
+				case '*': return KeyEvent.VK_ASTERISK;
+				case '(': return KeyEvent.VK_LEFT_PARENTHESIS;
+				case ')': return KeyEvent.VK_RIGHT_PARENTHESIS;
+				case '-': return KeyEvent.VK_SUBTRACT;
+				case '_': return KeyEvent.VK_UNDERSCORE;
+				case '=': return KeyEvent.VK_EQUALS;
+				case '+': return KeyEvent.VK_PLUS;
+				case '[': return KeyEvent.VK_OPEN_BRACKET;
+				case '{': return KeyEvent.VK_BRACELEFT;
+				case ']': return KeyEvent.VK_CLOSE_BRACKET;
+				case '}': return KeyEvent.VK_BRACERIGHT;
+				case ':': return KeyEvent.VK_COLON;
+				case ';': return KeyEvent.VK_SEMICOLON;
+				case '"': return KeyEvent.VK_QUOTE;
+				case '<': return KeyEvent.VK_COMMA;
+				case '>': return KeyEvent.VK_PERIOD;
+				case '|': return KeyEvent.VK_BACK_SLASH;
+				case '\\': return KeyEvent.VK_BACK_SLASH;
+				case ',': return KeyEvent.VK_COMMA;
+				case '.': return KeyEvent.VK_PERIOD;
+				case '/': return KeyEvent.VK_DIVIDE;
+				case '?': return KeyEvent.VK_SLASH;
+				case ' ': return KeyEvent.VK_SPACE;
+				case 127: return KeyEvent.VK_DELETE;
+				}
+		}
+		return 0;
 	}
 	
 	public KeyFunction(String sk){

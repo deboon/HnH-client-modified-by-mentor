@@ -57,6 +57,7 @@ public class UI {
     private Collection<AfterDraw> afterdraws = null;
 	
 	public KeyBindWnd kbw = null;
+	boolean[] keys = new boolean[522];
 	
     public interface Receiver {
 	public void rcvmsg(int widget, String msg, Object... args);
@@ -261,6 +262,8 @@ public class UI {
 	
     public void keydown(KeyEvent ev) {
 	setmods(ev);
+	if(ev.getKeyCode() <= 522)
+		keys[ev.getKeyCode()-1] = true;
 	if(keygrab == null) {
 	    if(!root.keydown(ev))
 		root.globtype((char)0, ev);
@@ -271,6 +274,8 @@ public class UI {
 	
     public void keyup(KeyEvent ev) {
 	setmods(ev);
+	if(ev.getKeyCode() <= 522)
+		keys[ev.getKeyCode()-1] = false;
 	if(keygrab == null)
 	    root.keyup(ev);
 	else

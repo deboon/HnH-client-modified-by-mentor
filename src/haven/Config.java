@@ -294,6 +294,7 @@ public class Config {
         }
         Resource.checkhide();
         timestamp = options.getProperty("timestamp","false").equals("true");
+		tiles_per_click = Integer.parseInt(options.getProperty("tiles_per_click","5"));
     }
 
     public static synchronized void setWindowOpt(String key, String value) {
@@ -361,6 +362,7 @@ public class Config {
         options.setProperty("newclaim", newclaim?"true":"false");
         options.setProperty("showq", showq?"true":"false");
         options.setProperty("showpath", showpath?"true":"false");
+		options.setProperty("tiles_per_click",Integer.toString(tiles_per_click));
         
         try {
             options.store(new FileOutputStream("haven.conf"), "Custom config options");

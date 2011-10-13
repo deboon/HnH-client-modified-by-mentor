@@ -262,7 +262,7 @@ public class UI {
 	
     public void keydown(KeyEvent ev) {
 	setmods(ev);
-	if(ev.getKeyCode() <= 522)
+	if(ev.getKeyCode() <= 522  && ev.getKeyCode() > 0)
 		keys[ev.getKeyCode()-1] = true;
 	if(keygrab == null) {
 	    if(!root.keydown(ev))
@@ -274,7 +274,7 @@ public class UI {
 	
     public void keyup(KeyEvent ev) {
 	setmods(ev);
-	if(ev.getKeyCode() <= 522)
+	if(ev.getKeyCode() <= 522 && ev.getKeyCode() > 0)
 		keys[ev.getKeyCode()-1] = false;
 	if(keygrab == null)
 	    root.keyup(ev);

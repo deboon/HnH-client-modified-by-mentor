@@ -165,14 +165,15 @@ public class KeyBindWnd extends Window{
 		
 		public boolean type(char key, KeyEvent ev) {
 			if(ev.isControlDown())
-				return(true);
+				return(false);
 			int spec = (ev.isAltDown())?KeyFunction.ALT:KeyFunction.NORMAL;
 			if(rdy && key <= 127 && isallowed(key,ev,spec)){
 				setText(translateChar(key,spec),(int)key,spec);
 				ui.kbw.saveall();
 				lostfocus();
+				return(true);
 			}
-			return(true);
+			return(false);
 		}
 		
 		public boolean keydown(KeyEvent ev){
@@ -181,14 +182,15 @@ public class KeyBindWnd extends Window{
 			switch(ev.getKeyCode()){
 			case 15:
 			case 16:
-			case 17: return(true);
+			case 17: return(false);
 			}
 			if(rdy && isallowed(ev.getKeyCode(),ev,spec)){
 				setText(translateCode(tk,spec),tk,spec);
 				ui.kbw.saveall();
 				lostfocus();
+				return(true);
 			}
-			return(true);
+			return(false);
 		}
 		
 		private void setText(String s,int k,int c){

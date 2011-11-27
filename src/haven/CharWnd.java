@@ -36,6 +36,7 @@ import java.util.*;
 
 public class CharWnd extends Window {
     public static CharWnd instance;
+    static NAttr LA;
     Widget cattr, skill, belief;
     Worship ancw;
     Label cost, skcost;
@@ -692,7 +693,7 @@ public class CharWnd extends Window {
 	new Label(new Coord(210, expbase + 15), cattr, "Learning Points:");
 	explbl = new Label(new Coord(300, expbase + 15), cattr, "0");
 	new Label(new Coord(210, expbase + 30), cattr, "Learning Ability:");
-	new NAttr("expmod", 300, expbase + 30) {
+	LA = new NAttr("expmod", 300, expbase + 30) {
 	    public void update() {
 		lbl.settext(String.format("%d%%", attr.comp));
 		if(attr.comp < 100)

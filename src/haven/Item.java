@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Item extends Widget implements DTarget {
+    static Map<String,Float[]> hm_c = new HashMap<String,Float[]>();
     static Coord shoff = new Coord(1, 3);
     static final Pattern patt = Pattern.compile("quality (\\d+) ", Pattern.CASE_INSENSITIVE);
     static Map<Integer, Tex> qmap;
@@ -75,6 +76,74 @@ public class Item extends Widget implements DTarget {
 	    });
 	missing.loadwait();
 	qmap = new HashMap<Integer, Tex>();
+	hm_c.put("River Pearl",new Float[]{5000f,1f,15f});
+	hm_c.put("Ruby Dragonfly",new Float[]{2400f,4f,4f});
+	hm_c.put("Ant Soldiers",new Float[]{200f,0.67f,2f});
+	hm_c.put("Cone Cow",new Float[]{50f,0.33f,1f});
+	hm_c.put("Ant Queen",new Float[]{500f,1.33f,3f});
+	hm_c.put("Rabid Jackalope",new Float[]{10000f,12f,7f});
+	hm_c.put("Ant Empress",new Float[]{2000f,3.33f,6f});
+	hm_c.put("Emerald Dragonfly",new Float[]{800f,4f,2f});
+	hm_c.put("Peculiar Flotsam",new Float[]{3000f,4f,9f});
+	hm_c.put("Dandelion",new Float[]{50f,0.67f,1f});
+	hm_c.put("Edelweiß",new Float[]{4000f,7f,8f});
+	hm_c.put("Edelweiss",new Float[]{4000f,7f,8f});
+	hm_c.put("Chiming Bluebell",new Float[]{8000f,18f,7f});
+	hm_c.put("Royal Toadstool",new Float[]{600f,3.33f,3f});
+	hm_c.put("Prince Charming",new Float[]{10000f,12f,15f});
+	hm_c.put("Stalagoom",new Float[]{300f,2f,3f});
+	hm_c.put("Thorny Thistle",new Float[]{550f,6f,2f});
+	hm_c.put("Glimmermoss",new Float[]{3500f,16f,5f});
+	hm_c.put("Weird Beetroot",new Float[]{10000f,120f,2f});
+	hm_c.put("Aurochs Hair",new Float[]{2000f,48f,1f});
+	hm_c.put("Bloated Bolete",new Float[]{1600f,8f,5f});
+	hm_c.put("Dewy Lady's Mantle",new Float[]{600f,5f,3f});
+	hm_c.put("Frog's Crown",new Float[]{1200f,8f,4f});
+	hm_c.put("Troll Skull",new Float[]{80000f,100f,23f});
+	hm_c.put("Ladybug",new Float[]{400f,4f,3f});
+	hm_c.put("Bark Boat",new Float[]{500f,3f,5f});
+	hm_c.put("Tangled Bramble",new Float[]{1000f,10f,3f});
+	hm_c.put("Straw Doll",new Float[]{850f,4.5f,6f});
+	hm_c.put("Uncommon Snapdragon",new Float[]{1000f,8f,4f});
+	hm_c.put("Völva's Wand",new Float[]{3000f,12f,8f});
+	hm_c.put("Poppy Flower",new Float[]{500f,16f,1f});
+	hm_c.put("Washed-up Bladderwrack",new Float[]{750f,9f,3f});
+	hm_c.put("Enthroned Toad",new Float[]{4000f,15f,10f});
+	hm_c.put("Stuffed Bear",new Float[]{3000f,24f,5f});
+	hm_c.put("Porcelain Doll",new Float[]{2750f,11f,10f});
+	hm_c.put("Everglowing Ember",new Float[]{20000f,44f,20f});
+	hm_c.put("Lucky Rabbit's Foot",new Float[]{2000f,24f,4f});
+	hm_c.put("Feather Duster",new Float[]{800f,10f,4f});
+	hm_c.put("Lady's Mantle",new Float[]{600f,5f,6f});
+	hm_c.put("Tiny Abacus",new Float[]{4000f,16f,14f});
+	hm_c.put("Wondrous Woodshaving",new Float[]{8000f,40f,12f});
+	hm_c.put("Primitive Doll",new Float[]{500f,8f,4f});
+	hm_c.put("Seer's Bones",new Float[]{600f,6.5f,6f});
+	hm_c.put("Fishy Eyeball",new Float[]{350f,8f,3f});
+	hm_c.put("Seer's Bowl",new Float[]{800f,8f,7f});
+	hm_c.put("Toy Chariot",new Float[]{1000f,24f,3f});
+	hm_c.put("Itsy Bitsy's Web",new Float[]{5000f,36f,10f});
+	hm_c.put("Wishbone",new Float[]{1500f,24f,5f});
+	hm_c.put("Prism",new Float[]{800f,12f,6f});
+	hm_c.put("Tin Soldier",new Float[]{1500f,24f,6f});
+	hm_c.put("Bronze Steed",new Float[]{5000f,36f,14f});
+	hm_c.put("The Perfect Hole",new Float[]{13370f,96f,15f});
+	hm_c.put("Sand Castle",new Float[]{2000f,18f,12f});
+	hm_c.put("Seer's Tealeaves",new Float[]{2100f,24f,10f});
+	hm_c.put("Itsy Bitsy Spider",new Float[]{2000f,40f,6f});
+	hm_c.put("Strange Root",new Float[]{6000f,56f,15f});
+	hm_c.put("Shewbread",new Float[]{10000f,120f,16f});
+	hm_c.put("Cat Gold",new Float[]{350f,36f,2f});
+	hm_c.put("Simple Idol",new Float[]{700f,24f,8f});
+	hm_c.put("Petrified Seashell",new Float[]{1000f,60f,5f});
+	hm_c.put("Strange Crystal",new Float[]{2000f,60f,12f});
+	hm_c.put("Shocked Frog",new Float[]{800f,32f,9f});
+	hm_c.put("Boar Tusk",new Float[]{750f,24f,12f});
+	hm_c.put("Leather Ball",new Float[]{600f,48f,6f});
+	hm_c.put("Rattle-Tattle-Talisman",new Float[]{750f,56f,8f});
+	hm_c.put("Dark Heart",new Float[]{1500f,96f,10f});
+	hm_c.put("Deer Antlers",new Float[]{1000f,38f,20f});
+	hm_c.put("Bear Tooth",new Float[]{750f,28f,25f});
     }
     
     public void settip(String t){
@@ -198,14 +267,21 @@ public class Item extends Widget implements DTarget {
 	if((res != null) && (res.layer(Resource.tooltip) != null)) {
 	    String tt = res.layer(Resource.tooltip).t;
 	    if(tt != null) {
+		Float[] inf = hm_c.get(tt);
 		if(q > 0) {
 		    tt = tt + ", quality " + q;
-		    if(hq)
-			tt = tt + "+";
 		}
-//		if(meter > 0) {
-//		    tt = tt + " (" + meter + "%)";
-//		}
+		if(meter > 0) {
+		    tt = tt + " (" + meter + "%";
+		    if(inf != null)
+			tt = tt + String.format(" => %.2f h)",(inf[1]*(meter/100.0)));
+		    else
+			tt = tt + ")";
+		}
+		if(inf != null){
+		    tt = tt + String.format("\nLPGain: %d",(int)( (CharWnd.LA.attr.comp/100.0)*inf[0]*Math.sqrt(q/10.0)));
+		    tt = tt + "\nWeight: " + inf[2].shortValue();
+		}
 		return(tt);
 	    }
 	}
@@ -213,43 +289,23 @@ public class Item extends Widget implements DTarget {
     }
     
     long hoverstart;
-    Text shorttip = null, longtip = null;
+    Text longtip = null;
     public Object tooltip(Coord c, boolean again) {
-	long now = System.currentTimeMillis();
-	if(!again)
-	    hoverstart = now;
 	Resource res = this.res.get();
-	Resource.Pagina pg = (res!=null)?res.layer(Resource.pagina):null;
-	if(((now - hoverstart) < 500)||(pg == null)) {
-	    if(shorttip == null) {
-		String tt = shorttip();
-		if(tt != null) {
-		    if(meter > 0) {
-			    tt = tt + " (" + meter + "%)";
-			}
-		    shorttip = Text.render(tt);
-		}
-	    }
-	    return(shorttip);
-	} else {
-	    if((longtip == null) && (res != null)) {
-		String tip = shorttip();
-		if(tip == null)
-		    return(null);
-		String tt = RichText.Parser.quote(tip);
-		if(meter > 0) {
-		    tt = tt + " (" + meter + "%)";
-		}
-		if(pg != null)
-		    tt += "\n\n" + pg.text;
-		longtip = RichText.render(tt, 200);
-	    }
-	    return(longtip);
+	if((longtip == null) && (res != null)) {
+	    Resource.Pagina pg = res.layer(Resource.pagina);
+	    String tip = shorttip();
+	    if(tip == null)
+		return(null);
+	    String tt = RichText.Parser.quote(tip);
+	    if(pg != null)
+		tt += "\n\n" + pg.text;
+	    longtip = RichText.render(tt, 250);
 	}
+	return(longtip);
     }
     
     private void resettt() {
-	shorttip = null;
 	longtip = null;
     }
 
@@ -353,7 +409,6 @@ public class Item extends Widget implements DTarget {
 	    resettt();
 	} else if(name == "meter") {
 	    meter = (Integer)args[0];
-	    shorttip = null;
 	    longtip = null;
 	}
     }

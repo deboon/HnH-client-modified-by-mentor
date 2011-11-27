@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
@@ -95,8 +96,8 @@ public class Config {
     public static boolean newclaim;
     public static boolean showq;
     public static boolean showpath;
-	
-	public static int tiles_per_click = 5;
+    public static Map<String, Map<String, Float>> FEPMap = new HashMap<String,Map<String, Float>>();	
+    public static int tiles_per_click = 5;
     
     static {
 	try {
@@ -135,13 +136,36 @@ public class Config {
 	    hideObjectList = Collections.synchronizedSet(new HashSet<String>());
 	    loadOptions();
 	    loadWindowOptions();
-		loadkopts();
+	    loadkopts();
 	    loadSmileys();
+	    loadFEP();
 	} catch(java.net.MalformedURLException e) {
 	    throw(new RuntimeException(e));
 	}
     }
     
+    private static void loadFEP() {
+	try{
+	    BufferedReader br = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream("fep.conf"))));
+	    String l;
+	    while( (l=br.readLine()) != null) {
+		Map<String,Float> fep = new HashMap<String,Float>();
+		String tmp[] = l.split("=");
+		String name = tmp[0].toLowerCase();
+		tmp = tmp[1].split(" ");
+		for(String itm : tmp){
+		    String tmp2[] = itm.split(":");
+		    fep.put(tmp2[0],Float.valueOf(tmp2[1]).floatValue());
+		}
+		FEPMap.put(name,fep);
+	    }
+	    br.close();
+	}catch(Exception e){
+	    e.printStackTrace();
+	    System.exit(1);
+	}
+    }
+
     public static String mksmiley(String str){
 	synchronized (smileys) {
 	    for(Pattern p : Config.smileys.keySet()){

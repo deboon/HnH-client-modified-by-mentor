@@ -42,6 +42,7 @@ public class Item extends Widget implements DTarget {
     static Color outcol = new Color(0,0,0,255);
     boolean dm = false;
     int q, q2;
+    double qroot;
     boolean hq;
     Coord doff;
     String tooltip;
@@ -129,7 +130,7 @@ public class Item extends Widget implements DTarget {
 	hm_c.put("Bronze Steed",new Float[]{5000f,36f,14f});
 	hm_c.put("The Perfect Hole",new Float[]{13370f,96f,15f});
 	hm_c.put("Sand Castle",new Float[]{2000f,18f,12f});
-	hm_c.put("Seer's Tealeaves",new Float[]{2100f,24f,10f});
+	hm_c.put("Seer's Tea Leaves",new Float[]{2100f,24f,10f});
 	hm_c.put("Itsy Bitsy Spider",new Float[]{2000f,40f,6f});
 	hm_c.put("Strange Root",new Float[]{6000f,56f,15f});
 	hm_c.put("Shewbread",new Float[]{10000f,120f,16f});
@@ -266,8 +267,9 @@ public class Item extends Widget implements DTarget {
 	Resource res = this.res.get();
 	if((res != null) && (res.layer(Resource.tooltip) != null)) {
 	    String tt = res.layer(Resource.tooltip).t;
+	    String base = tt;
 	    if(tt != null) {
-		Float[] inf = hm_c.get(tt);
+		Float[] inf = hm_c.get(base);
 		if(q > 0) {
 		    tt = tt + ", quality " + q;
 		}
@@ -279,9 +281,10 @@ public class Item extends Widget implements DTarget {
 			tt = tt + ")";
 		}
 		if(inf != null){
-		    tt = tt + String.format("\nLPGain: %d",(int)( (CharWnd.LA.attr.comp/100.0)*inf[0]*Math.sqrt(q/10.0)));
+		    tt = tt + String.format("\nLPGain: %d",(int)( (CharWnd.LA.attr.comp/100.0)*inf[0]*qroot));
 		    tt = tt + "\nWeight: " + inf[2].shortValue();
 		}
+		tt = tt + calcFEP(base);
 		return(tt);
 	    }
 	}
@@ -305,6 +308,19 @@ public class Item extends Widget implements DTarget {
 	return(longtip);
     }
     
+    private String calcFEP(String n) {
+	Map<String,Float> fep;
+	String ret = "";
+	if((fep = Config.FEPMap.get(n.toLowerCase())) != null) {
+	    ret = "\n";
+	    for(String key : fep.keySet()) {
+		ret += String.format("%s:%.1f ", key, (float)fep.get(key)*qroot);
+	    }
+	}
+	return ret;
+    }
+    
+
     private void resettt() {
 	longtip = null;
     }
@@ -313,6 +329,7 @@ public class Item extends Widget implements DTarget {
     {
 	if(q < 0) {
 	    this.q = q;
+	    qroot = Math.sqrt(q/10.0);
 	    hq = false;
 	} else {
 	    int fl = (q & 0xff000000) >> 24;

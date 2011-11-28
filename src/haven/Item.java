@@ -268,6 +268,7 @@ public class Item extends Widget implements DTarget {
 	if((res != null) && (res.layer(Resource.tooltip) != null)) {
 	    String tt = res.layer(Resource.tooltip).t;
 	    String base = tt;
+	    qroot = Math.sqrt(q/10.0);
 	    if(tt != null) {
 		Float[] inf = hm_c.get(base);
 		if(q > 0) {
@@ -276,7 +277,7 @@ public class Item extends Widget implements DTarget {
 		if(meter > 0) {
 		    tt = tt + " (" + meter + "%";
 		    if(inf != null)
-			tt = tt + String.format(" => %.2f h)",(inf[1]*(meter/100.0)));
+			tt = tt + String.format(" => %.2f h)",inf[1]-(inf[1]*(meter/100.0)));
 		    else
 			tt = tt + ")";
 		}
@@ -329,7 +330,6 @@ public class Item extends Widget implements DTarget {
     {
 	if(q < 0) {
 	    this.q = q;
-	    qroot = Math.sqrt(q/10.0);
 	    hq = false;
 	} else {
 	    int fl = (q & 0xff000000) >> 24;

@@ -143,7 +143,7 @@ public class Avaview extends Widget {
 				dm = true;
 				doff = c;
 				wdgmsg("click", button); break;
-		case 3: if(avagob > 0 && ui.sess.glob.oc.getgob(avagob).getattr(Avatar.class) != null){
+		case 3: if(avagob > 0 && ui.sess.glob.oc.getgob(avagob) != null && ui.sess.glob.oc.getgob(avagob).getattr(Avatar.class) != null){
 					new XAvaGear(this.c.add(c),ui.root,avagob);
 				} else if(myown != null){
 					new XAvaGear(this.c.add(c),ui.root,myown);

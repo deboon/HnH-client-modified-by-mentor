@@ -76,8 +76,6 @@ public class RootWidget extends ConsoleHost {
 				akeys.get(key).dokey(ui,ev);
 			else if(keys.get(key) != null)
 				keys.get(key).dokey(ui,ev);
-			else if(key != 0)
-				wdgmsg("gk",(int)key);
 		}
 		return(true);
     }

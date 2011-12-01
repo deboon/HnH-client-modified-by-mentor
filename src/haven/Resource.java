@@ -622,6 +622,10 @@ public class Resource implements Comparable<Resource>, Prioritized, Serializable
 	    }
 	}
 		
+	public String toString(){
+	    return(String.format("%s %s %s %s",
+				 cc,bc,bs,sz));
+	}
 	public void init() {}
     }
     static {ltypes.put("neg", Neg.class);}

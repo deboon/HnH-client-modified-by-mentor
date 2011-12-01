@@ -119,7 +119,7 @@ public class Cal extends SSWidget {
     }
 	
     public void mousemove(Coord c) {
-		if(dm) {
+		if(dm && !Config.global_ui_lock) {
 		    this.c = this.c.add(c.add(doff.inv()));
 		}else
 			super.mousemove(c);

@@ -98,7 +98,10 @@ public class Config {
     public static boolean showpath;
     public static Map<String, Map<String, Float>> FEPMap = new HashMap<String,Map<String, Float>>();	
     public static int tiles_per_click = 5;
-    
+    public static int wheel_to_real = 20;
+    public static Map<String,Resource.Neg> PAca = new HashMap<String,Resource.Neg>();
+    public static boolean global_ui_lock = false;
+
     static {
 	try {
 	    String p;
@@ -141,6 +144,27 @@ public class Config {
 	    loadFEP();
 	} catch(java.net.MalformedURLException e) {
 	    throw(new RuntimeException(e));
+	}
+    }
+
+    public static void loadPA()
+    {
+	try{
+	    BufferedReader br = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream("pa"))));
+	    String l;
+	    Resource r;
+	    Resource.Neg ne;
+	    while( (l=br.readLine()) != null){
+		r = Resource.load(l);
+		r.loadwait();
+		PAca.put((ne=r.layer(Resource.negc)).toString(),ne);
+	    }
+	    ne = null;
+	    r = null;
+	    br.close();
+	}catch(Exception e){
+	    e.printStackTrace();
+	    System.exit(1);
 	}
     }
     
@@ -308,6 +332,7 @@ public class Config {
         showpath = options.getProperty("showpath", "false").equals("true");
         sfxVol = Integer.parseInt(options.getProperty("sfx_vol", "100"));
         musicVol = Integer.parseInt(options.getProperty("music_vol", "100"));
+	global_ui_lock = options.getProperty("global_ui_lock","false").equals("true");
         hideObjectList.clear();
         if (!hideObjects.isEmpty()) {
             for (String objectName : hideObjects.split(",")) {
@@ -386,7 +411,8 @@ public class Config {
         options.setProperty("newclaim", newclaim?"true":"false");
         options.setProperty("showq", showq?"true":"false");
         options.setProperty("showpath", showpath?"true":"false");
-		options.setProperty("tiles_per_click",Integer.toString(tiles_per_click));
+	options.setProperty("tiles_per_click",Integer.toString(tiles_per_click));
+	options.setProperty("global_ui_lock",global_ui_lock?"true":"false");
         
         try {
             options.store(new FileOutputStream("haven.conf"), "Custom config options");

@@ -144,7 +144,7 @@ public class Avaview extends Widget {
 				doff = c;
 				wdgmsg("click", button); break;
 		case 3: 
-		    if(parent instanceof Partyview){
+		    if(parent instanceof Partyview || parent instanceof Fightview){
 			wdgmsg("click",button);
 		    }else if(avagob > 0 && ui.sess.glob.oc.getgob(avagob) != null && ui.sess.glob.oc.getgob(avagob).getattr(Avatar.class) != null){
 			new XAvaGear(this.c.add(c),ui.root,avagob);
@@ -171,7 +171,7 @@ public class Avaview extends Widget {
 	}
 	
     public void mousemove(Coord c) {
-		if(dm) {
+		if(dm && !Config.global_ui_lock) {
 			if(ui.mainview != null && avagob == ui.mainview.playergob){
 				this.c = this.c.add(c.add(doff.inv()));
 			} else if(parent instanceof Partyview)  {

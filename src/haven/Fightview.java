@@ -43,6 +43,8 @@ public class Fightview extends Widget {
     public Relation current = null;
     public Indir<Resource> blk, batk, iatk;
     public long atkc = -1;
+    public long atks = -1;
+    public long atkcc = -1;
     public int off, def;
     private GiveButton curgive;
     private Avaview curava;
@@ -128,7 +130,6 @@ public class Fightview extends Widget {
     public void draw(GOut g) {
         curava.c.x = MainFrame.innerSize.width - 100;
         curgive.c.x = MainFrame.innerSize.width - 135;
-        comwdg.c.x = MainFrame.centerPoint.x - 85;
         c.x = MainFrame.innerSize.width - 10 - bg.sz().x;
         int y = 0;
         for(Relation rel : lsrel) {
@@ -240,7 +241,11 @@ public class Fightview extends Widget {
 	    }
             return;
         } else if(msg == "atkc") {
-	    atkc = System.currentTimeMillis() + (((Integer)args[0]) * 60);
+	    long now = System.currentTimeMillis();
+	    atkc = now + (((Integer)args[0]) * 60);
+	    if(atks == -1)
+		atks = now;
+	    atkcc = atkc-atks;
 	    return;
 	} else if(msg == "blk") {
 	    blk = n2r((Integer)args[0]);

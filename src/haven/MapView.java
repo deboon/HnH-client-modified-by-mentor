@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class MapView extends Widget implements DTarget, Console.Directory {
+    static int alpha = 255;
     static Color[] olc = new Color[31];
     static Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
     public Coord mc, mousepos, pmousepos;
@@ -63,6 +64,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
     boolean plontile;
     int plrad = 0;
     int playergob = -1;
+    boolean paload = false;
     public Profile prof = new Profile(300);
     private Profile.Frame curf;
     Coord plfpos = null;
@@ -530,6 +532,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	this.mc = mc;
 	this.playergob = playergob;
 	this.cam = restorecam();
+	Config.loadPA();
 	setcanfocus(true);
 	glob = ui.sess.glob;
 	map = glob.map;
@@ -658,7 +661,8 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	    return(true);
 	}
     }
-	
+    
+    
     public void mousemove(Coord c) {
 	c = new Coord((int)(c.x/getScale()), (int)(c.y/getScale()));
 	this.pmousepos = c;
@@ -721,6 +725,14 @@ public class MapView extends Widget implements DTarget, Console.Directory {
     }
     
     public boolean mousewheel(Coord c, int amount) {
+	if(ui.modctrl){
+	    alpha += -amount*Config.wheel_to_real;
+	    if(alpha > 255)
+		alpha = 255;
+	    else if(alpha < 0)
+		alpha = 0;
+	    return(true);
+	}
 	if(!Config.zoom)
 	    return false;
 	si = Math.min(8, Math.max(0, si - amount));
@@ -1243,12 +1255,24 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	    obscured = findobsc();
 	    if(curf != null)
 		curf.tick("obsc");
+	    boolean alpha = false;
+	    Resource.Neg ne;
 	    for(Sprite.Part part : sprites) {
+		ne = ((Gob)part.owner).getneg();
+		if(ne != null && Config.PAca.get(ne.toString()) != null && alpha){
+		    g.chcolor();
+		    alpha = false;
+		} else if(!alpha){
+		    g.chcolor(255,255,255,this.alpha);
+		    alpha = true;
+		}
 		if(part.effect != null)
 		    part.draw(part.effect.apply(g));
 		else
 		    part.draw(g);
 	    }
+	    g.chcolor();
+
 	    for(Sprite.Part part : obscured) {
 		GOut g2 = new GOut(g);
 		GobHealth hlt;
@@ -1378,6 +1402,14 @@ public class MapView extends Widget implements DTarget, Console.Directory {
     }
 
     public void draw(GOut og) {
+	if(!paload && ui.sess.glob.oc.getgob(playergob) != null){
+	    Resource.Neg ne = ui.sess.glob.oc.getgob(playergob).getneg();
+	    if(ne != null){
+		Config.PAca.put(ne.toString(),ne);
+		ne = null;
+		paload = true;
+	    }
+	}
 	if(!ready)
 		initd();
 	if(moveto != null){

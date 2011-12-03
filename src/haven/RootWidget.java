@@ -82,6 +82,12 @@ public class RootWidget extends ConsoleHost {
 	
 	public boolean keydown(KeyEvent ev){
 		if(!super.keydown(ev)){
+		    if ((ev.getKeyCode() == KeyEvent.VK_Y) && ((ev.getModifiers() & ev.CTRL_MASK) != 0)) {
+			Config.render_enable = !Config.render_enable;
+			Config.saveOptions();
+			System.out.println("Render is " + (Config.render_enable ? "ON" : "OFF"));
+			return (true);
+		    }
 			if(MenuGrid.instance != null && (MenuGrid.instance.digitbar.checkKey((char)0,ev) || MenuGrid.instance.functionbar.checkKey((char)0,ev) || MenuGrid.instance.numpadbar.checkKey((char)0,ev)))
 				return(true);
 			if(ev.isControlDown() && ckeys.get(ev.getKeyCode()) != null)

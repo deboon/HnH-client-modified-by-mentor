@@ -104,6 +104,7 @@ public class Config {
     public static int wheel_to_real = 20;
     public static Map<String,Resource.Neg> PAca = new HashMap<String,Resource.Neg>();
     public static boolean global_ui_lock = false;
+    public static boolean render_enable = true;
 
     static {
 	try {
@@ -407,7 +408,7 @@ public class Config {
         options.setProperty("showNames", showNames?"true":"false");
         options.setProperty("showOtherNames", showOtherNames?"true":"false");
         options.setProperty("showBeast", showBeast?"true":"false");
-        options.setProperty("showHP", showHP ? "true" : "false"); //mentor
+        options.setProperty("showHP", showHP ? "true" : "false");
         options.setProperty("showForag", showForag ? "true" : "false");
         options.setProperty("showRadius", showRadius?"true":"false");
         options.setProperty("showHidden", showHidden?"true":"false");

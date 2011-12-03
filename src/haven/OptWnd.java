@@ -63,9 +63,9 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(Coord c, Widget parent) {
-	super(c, new Coord(400, 445), parent, "Options");
+	super(c, new Coord(400, 480), parent, "Options");
 
-	body = new Tabs(Coord.z, new Coord(400, 445), this) {
+	body = new Tabs(Coord.z, new Coord(400, 480), this) {
 	    public void changed(Tab from, Tab to) {
 		Utils.setpref("optwndtab", to.btn.text.text);
 		from.btn.c.y = 0;
@@ -155,6 +155,21 @@ public class OptWnd extends Window {
 		}
 	    }).a = Config.showpath;
 	    
+	    (new CheckBox(new Coord(10, 445), tab, "Use sys cursor (restart required)") {
+               public void changed(boolean val) {
+                   Config.sysCursor = val;
+                   Config.saveOptions();
+               }
+	    }).a = Config.sysCursor;
+
+	    
+	    (new CheckBox(new Coord(220, 115), tab, "Lock ui") {
+		    public void changed(boolean val) {
+			Config.global_ui_lock = val;
+			Config.saveOptions();
+		    }
+	    }).a = Config.global_ui_lock;
+	    
 	    (new CheckBox(new Coord(220, 130), tab, "Fast menu") {
 		public void changed(boolean val) {
 		    Config.fastFlowerAnim = val;
@@ -223,13 +238,6 @@ public class OptWnd extends Window {
 		    return true;
 		}
 	    };
-
-	    (new CheckBox(new Coord(220, 115), tab, "Lock ui") {
-		    public void changed(boolean val) {
-			Config.global_ui_lock = val;
-			Config.saveOptions();
-		    }
-		}).a = Config.global_ui_lock;
 		
 	    Widget editbox = new Frame(new Coord(310, 30), new Coord(90, 100), tab);
 	    new Label(new Coord(20, 10), editbox, "Edit mode:");
@@ -458,7 +466,7 @@ public class OptWnd extends Window {
 	    new Label(new Coord(100, 190), tab, "Powered by Google Translate");
 	}
 
-	new Frame(new Coord(-10, 20), new Coord(420, 430), this);
+	new Frame(new Coord(-10, 20), new Coord(420, 465), this);
 	String last = Utils.getpref("optwndtab", "");
 	for (Tabs.Tab t : body.tabs) {
 	    if (t.btn.text.text.equals(last))

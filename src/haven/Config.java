@@ -94,6 +94,7 @@ public class Config {
     public static boolean sshot_noui;
     public static boolean sshot_nonames;
     public static boolean newclaim;
+    public static boolean sysCursor;
     public static boolean showq;
     public static boolean showpath;
     public static Map<String, Map<String, Float>> FEPMap = new HashMap<String,Map<String, Float>>();	
@@ -328,6 +329,7 @@ public class Config {
         sshot_noui = options.getProperty("sshot_noui", "false").equals("true");
         sshot_nonames = options.getProperty("sshot_nonames", "false").equals("true");
         newclaim = options.getProperty("newclaim", "true").equals("true");
+        sysCursor = options.getProperty("sysCursor", "false").equals("true");
         showq = options.getProperty("showq", "true").equals("true");
         showpath = options.getProperty("showpath", "false").equals("true");
         sfxVol = Integer.parseInt(options.getProperty("sfx_vol", "100"));
@@ -409,6 +411,7 @@ public class Config {
         options.setProperty("sshot_noui", sshot_noui?"true":"false");
         options.setProperty("sshot_nonames", sshot_nonames?"true":"false");
         options.setProperty("newclaim", newclaim?"true":"false");
+        options.setProperty("sysCursor", sysCursor?"true":"false");
         options.setProperty("showq", showq?"true":"false");
         options.setProperty("showpath", showpath?"true":"false");
 	options.setProperty("tiles_per_click",Integer.toString(tiles_per_click));

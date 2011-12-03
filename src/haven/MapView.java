@@ -1292,8 +1292,10 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 		if (Config.showHP) {
 		    GobHealth hlt;
 			if ((hlt = (GobHealth)((Gob)part.owner).getattr(GobHealth.class)) != null) {
+			    if(hlt.asfloat()<1) {
 				String f = "\n"+Float.valueOf((float)(hlt.asfloat() * 100.0D)) + "%";
 				g.text(f, part.sc().add(10, 20));
+			    }
           		}
 		}
 	    }

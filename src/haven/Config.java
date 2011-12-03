@@ -86,6 +86,8 @@ public class Config {
     public static boolean showRadius = false;
     public static boolean showHidden = false;
     public static boolean showBeast = false;
+    public static boolean showHP = false;
+    public static boolean showForag = false;
     public static boolean showDirection;
     public static boolean showNames;
     public static boolean showOtherNames;
@@ -321,6 +323,8 @@ public class Config {
         showNames = options.getProperty("showNames", "true").equals("true");
         showOtherNames = options.getProperty("showOtherNames", "false").equals("true");
         showBeast = options.getProperty("showBeast", "false").equals("true");
+        showHP = options.getProperty("showHP", "false").equals("true");
+        showForag = options.getProperty("showForag", "false").equals("true");
         showRadius = options.getProperty("showRadius", "false").equals("true");
         showHidden = options.getProperty("showHidden", "false").equals("true");
         simple_plants = options.getProperty("simple_plants", "false").equals("true");
@@ -403,6 +407,8 @@ public class Config {
         options.setProperty("showNames", showNames?"true":"false");
         options.setProperty("showOtherNames", showOtherNames?"true":"false");
         options.setProperty("showBeast", showBeast?"true":"false");
+        options.setProperty("showHP", showHP ? "true" : "false"); //mentor
+        options.setProperty("showForag", showForag ? "true" : "false");
         options.setProperty("showRadius", showRadius?"true":"false");
         options.setProperty("showHidden", showHidden?"true":"false");
         options.setProperty("simple_plants", simple_plants?"true":"false");

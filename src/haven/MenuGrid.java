@@ -324,7 +324,19 @@ public class MenuGrid extends Widget {
 	    Config.saveOptions();
 	} else if(list[1].equals("timers")) {
 	    TimerPanel.toggle();
-	} else if(list[1].equals("animal")) {
+	} else if (list[1].equals("showhp")) {
+            Config.showHP = !Config.showHP;
+            String str = "Отображение ХП построек: " + (Config.showHP ? "ВКЛ" : "ВЫКЛ");
+            this.ui.cons.out.println(str);
+            this.ui.slen.error(str);
+            Config.saveOptions();
+    	} else if (list[1].equals("showforag")) {
+            Config.showForag = !Config.showForag;
+            String str = "Подсветка собираемых объектов: " + (Config.showForag ? "ВКЛ" : "ВЫКЛ");
+            this.ui.cons.out.println(str);
+            this.ui.slen.error(str);
+            Config.saveOptions();
+        } else if(list[1].equals("animal")) {
 	    Config.showBeast = !Config.showBeast;
 	    String str = "Animal highlight is turned "+((Config.showBeast)?"ON":"OFF");
 	    ui.cons.out.println(str);

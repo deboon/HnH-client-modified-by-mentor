@@ -965,6 +965,20 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	g.chcolor();
     }
     
+    private void drawforagradius(GOut g) {
+	String name;
+	g.chcolor(0, 255, 0, 180);
+	synchronized (glob.oc) {
+	    for (Gob tg : glob.oc) {
+		name = tg.resname();
+		if ((tg.sc!=null)&&(name.indexOf("herbs")>=0)) {
+			drawradius(g, tg.sc, 10);
+		}
+	    }
+	}
+	g.chcolor();
+    }
+    
     private void drawtracking(GOut g) {
 	g.chcolor(255, 0, 255, 128);
 	Coord oc = viewoffset(sz, mc);
@@ -1154,6 +1168,10 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	    drawbeastradius(g);
 	}
 	
+	if(Config.showForag) {
+		drawforagradius(g);
+	}
+	
 	drawtracking(g);
 	
 	if(curf != null)
@@ -1270,6 +1288,14 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 		    part.draw(part.effect.apply(g));
 		else
 		    part.draw(g);
+		    
+		if (Config.showHP) {
+		    GobHealth hlt;
+			if ((hlt = (GobHealth)((Gob)part.owner).getattr(GobHealth.class)) != null) {
+				String f = "\n"+Float.valueOf((float)(hlt.asfloat() * 100.0D)) + "%";
+				g.text(f, part.sc().add(10, 20));
+          		}
+		}
 	    }
 	    g.chcolor();
 

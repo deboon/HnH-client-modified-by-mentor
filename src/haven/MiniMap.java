@@ -382,6 +382,22 @@ public class MiniMap extends Widget {
 		}
 	    }
 	}
+	
+	if((Config.showForag) && (!hidden)) {
+	    synchronized(ui.sess.glob.oc) {
+		g.chcolor(255, 255, 255, 255);
+		for (Gob tg : ui.sess.glob.oc) {
+		    String name = tg.resname();
+		    if ((tg.sc!=null) && (name.indexOf("/cdv") < 0) && (name.indexOf("terobjs/herbs")>=0)) {
+			Coord c = tg.rc.div(tilesz).add(tc.inv()).add(hsz.div(2)).sub(3,3);
+			Coord size = new Coord(6,6);
+			g.rect(c, size);
+		    }
+		}
+		g.chcolor();
+	    }
+	}
+
 	g.gl.glPopMatrix();
 	super.draw(og);
     }

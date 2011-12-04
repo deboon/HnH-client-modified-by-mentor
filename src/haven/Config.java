@@ -75,6 +75,7 @@ public class Config {
     public static boolean new_minimap;
     public static boolean simple_plants = false;
     public static Set<String> hideObjectList;
+    public static Set<String> foragObjectList;
     public static HashMap<Pattern, String> smileys;
     public static boolean nightvision;
     public static String currentCharName;
@@ -141,6 +142,7 @@ public class Config {
 	    window_props = new Properties();
 		keys = new Properties();
 	    hideObjectList = Collections.synchronizedSet(new HashSet<String>());
+	    foragObjectList = Collections.synchronizedSet(new HashSet<String>());
 	    loadOptions();
 	    loadWindowOptions();
 	    loadkopts();
@@ -312,6 +314,7 @@ public class Config {
             System.out.println(e);
         }
         String hideObjects = options.getProperty("hideObjects", "");
+        String foragObjects = options.getProperty("foragObjects", "");
         GoogleTranslator.apikey = options.getProperty("GoogleAPIKey", "AIzaSyCuo-ukzI_J5n-inniu2U7729ZfadP16_0");
         zoom = options.getProperty("zoom", "false").equals("true");
         noborders = options.getProperty("noborders", "false").equals("true");
@@ -348,6 +351,16 @@ public class Config {
                 }
             }
         }
+        
+        foragObjectList.clear();
+        if (!foragObjects.isEmpty()) {
+            for (String objectName : foragObjects.split(",")) {
+                if (!objectName.isEmpty()) {
+                    foragObjectList.add(objectName);
+                }
+            }
+        }
+        
         Resource.checkhide();
         timestamp = options.getProperty("timestamp","false").equals("true");
 		tiles_per_click = Integer.parseInt(options.getProperty("tiles_per_click","5"));
@@ -377,6 +390,16 @@ public class Config {
 	}
     }
     
+    public static void addforag(String str){
+	foragObjectList.add(str);
+	Resource.checkhide();
+    }
+    
+    public static void remforag(String str){
+	foragObjectList.remove(str);
+	Resource.checkhide();
+    }
+    
     public static void addhide(String str){
 	hideObjectList.add(str);
 	Resource.checkhide();
@@ -392,7 +415,12 @@ public class Config {
         for (String objectName : hideObjectList) {
             hideObjects += objectName+",";
         }
+        String foragObjects = "";
+        for (String objectName : foragObjectList) {
+            foragObjects += objectName+",";
+        }
         options.setProperty("hideObjects", hideObjects);
+        options.setProperty("foragObjects", foragObjects);
         options.setProperty("GoogleAPIKey", GoogleTranslator.apikey);
         options.setProperty("timestamp", (timestamp)?"true":"false");
         options.setProperty("zoom", zoom?"true":"false");

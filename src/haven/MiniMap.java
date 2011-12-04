@@ -388,7 +388,8 @@ public class MiniMap extends Widget {
 		g.chcolor(255, 255, 255, 255);
 		for (Gob tg : ui.sess.glob.oc) {
 		    String name = tg.resname();
-		    if ((tg.sc!=null) && (name.indexOf("/cdv") < 0) && (name.indexOf("terobjs/herbs")>=0)) {
+		    if ((tg.sc!=null)&&(Config.foragObjectList.contains(name))) {
+		    //if ((tg.sc!=null) && (name.indexOf("/cdv") < 0) && (name.indexOf("terobjs/herbs")>=0)) {
 			Coord c = tg.rc.div(tilesz).add(tc.inv()).add(hsz.div(2)).sub(3,3);
 			Coord size = new Coord(6,6);
 			g.rect(c, size);
@@ -397,7 +398,21 @@ public class MiniMap extends Widget {
 		g.chcolor();
 	    }
 	}
-
+	
+	if((Config.showBeast) && (!hidden)) {
+	    synchronized(ui.sess.glob.oc) {
+		g.chcolor(255, 128, 128, 255);
+		for (Gob tg : ui.sess.glob.oc) {
+		    String name = tg.resname();
+		    if ((tg.sc!=null) && (name.indexOf("/cdv") < 0) && ((name.indexOf("kritter/aurochs")>=0) || (name.indexOf("kritter/bear")>=0) || (name.indexOf("kritter/boar")>=0) || (name.indexOf("kritter/deer")>=0) || (name.indexOf("kritter/fox")>=0) || (name.indexOf("kritter/mufflon")>=0) || (name.indexOf("kritter/troll")>=0))) {
+			Coord c = tg.rc.div(tilesz).add(tc.inv()).add(hsz.div(2)).sub(3,3);
+			Coord size = new Coord(6,6);
+			g.fellipse(c, size);
+		    }
+		}
+		g.chcolor();
+	    }
+	}
 	g.gl.glPopMatrix();
 	super.draw(og);
     }

@@ -63,9 +63,9 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(Coord c, Widget parent) {
-	super(c, new Coord(400, 480), parent, "Options");
+	super(c, new Coord(400, 500), parent, "Options");
 
-	body = new Tabs(Coord.z, new Coord(400, 480), this) {
+	body = new Tabs(Coord.z, new Coord(400, 500), this) {
 	    public void changed(Tab from, Tab to) {
 		Utils.setpref("optwndtab", to.btn.text.text);
 		from.btn.c.y = 0;
@@ -405,7 +405,7 @@ public class OptWnd extends Window {
 	}
 
 	{ /* HIDE OBJECTS TAB */
-	    tab = body.new Tab(new Coord(210, 0), 80, "Hide Objects");
+	    tab = body.new Tab(new Coord(210, 0), 85, "Hide Objects");
 
 	    String[][] checkboxesList = { { "Walls", "gfx/arch/walls" },
 		    { "Gates", "gfx/arch/gates" },
@@ -436,37 +436,58 @@ public class OptWnd extends Window {
 	}
 
 	{ /* TRANSLATE OPTIONS TAB */
-	    tab = body.new Tab(new Coord(300, 0), 80, "Translation");
-	    (new CheckBox(new Coord(10, 30), tab, "Turn on") {
-		public void changed(boolean val) {
-		    GoogleTranslator.turnedon = val;
-		}
-	    }).a = GoogleTranslator.turnedon;
+	    tab = body.new Tab(new Coord(305, 0), 85, "Bless Forage");
+	    String[][] checkboxesList = { { "Ant Hill", "gfx/terobjs/anthill" },
+	    	    { "Bloated Bolete", "gfx/terobjs/herbs/bloatedbolete" },
+	    	    { "Blood Stern", "gfx/terobjs/herbs/bloodstern" },
+	    	    { "Blueberrie", "gfx/terobjs/herbs/blueberry" },
+		    { "Candleberry", "gfx/terobjs/herbs/candleberry" },
+		    { "Cavebulb", "gfx/terobjs/herbs/cavebulb" },
+		    { "Cave Clay", "gfx/terobjs/herbs/caveclay" },
+		    { "Chantrelle", "gfx/terobjs/herbs/chantrelle" },
+		    { "Chiming Bluebell", "gfx/terobjs/herbs/chimingbluebell" },
+		    { "Dandelion", "gfx/terobjs/herbs/dandelion" },
+		    { "Edelweiss", "gfx/terobjs/herbs/edelweiss" },
+		    { "Feldspar", "gfx/terobjs/herbs/feldspar" },
+		    { "Flotsam", "gfx/terobjs/herbs/flotsam" },
+		    { "Fourleaf Clover", "gfx/terobjs/herbs/fourleafclover" },
+		    { "Frogs Crown", "gfx/terobjs/herbs/frogscrown" },
+		    { "Inkweed", "gfx/terobjs/herbs/inkweed" },
+		    { "Glimmermoss", "gfx/terobjs/herbs/glimmermoss" },
+		    { "Gray Clay", "gfx/terobjs/herbs/grayclay" },
+		    { "Ladys Mantle", "gfx/terobjs/herbs/ladysmantle" },
+		    { "Mussel", "gfx/terobjs/herbs/mussel" },
+		    { "Royal Toadstool", "gfx/terobjs/herbs/royaltoadstool" },
+		    { "Rustroot", "gfx/terobjs/herbs/rustroot" },
+		    { "Spindly Taproot", "gfx/terobjs/herbs/spindlytaproot" },
+		    { "Stalagoom", "gfx/terobjs/herbs/stalagoom" },
+		    { "Stinging Nettle", "gfx/terobjs/herbs/stingingnettle" },
+		    { "Tangled Bramble", "gfx/terobjs/herbs/tangledbramble" },
+		    { "Thorny Thistle", "gfx/terobjs/herbs/thornythistle" },
+		    { "Uncommon Snapdragon", "gfx/terobjs/herbs/uncommonsnapdragon" },
+		    { "Wild Windsown Weed", "gfx/terobjs/herbs/windweed" } };
+	    int y = 0;
+	    int x = 10;
+	    for (final String[] checkbox : checkboxesList) {
+	    	if(y>420) {y=0; x+=150;};
+	    	y += 30;
+		CheckBox chkbox = new CheckBox(new Coord(x, y), tab,
+			checkbox[0]) {
 
-	    new Label(new Coord(150, 35), tab, "Target Language:");
-
-	    final RadioGroup langs = new RadioGroup(tab) {
-		public void changed(int btn, String lbl) {
-		    GoogleTranslator.lang = lbl;
-		}
-	    };
-	    langs.add("en", new Coord(150, 45));
-	    langs.add("ru", new Coord(150, 70));
-	    langs.check(GoogleTranslator.lang);
-	    
-	    new Label(new Coord(25, 125), tab, "Google API Key:");
-	    final TextEntry te = new TextEntry(new Coord(25, 150), new Coord(300, 20), tab, GoogleTranslator.apikey);
-	    new Button(new Coord(330, 150), 50, tab, "set") {
-		public void click() {
-		    GoogleTranslator.apikey = te.text;
-		    Config.saveOptions();
-		}
-	    };
-	    
-	    new Label(new Coord(100, 190), tab, "Powered by Google Translate");
+		    public void changed(boolean val) {
+			if (val) {
+			    Config.addforag(checkbox[1]);
+			} else {
+			    Config.remforag(checkbox[1]);
+			}
+			Config.saveOptions();
+		    }
+		};
+		chkbox.a = Config.foragObjectList.contains(checkbox[1]);
+	    }
 	}
 
-	new Frame(new Coord(-10, 20), new Coord(420, 465), this);
+	new Frame(new Coord(-10, 20), new Coord(420, 485), this);
 	String last = Utils.getpref("optwndtab", "");
 	for (Tabs.Tab t : body.tabs) {
 	    if (t.btn.text.text.equals(last))

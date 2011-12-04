@@ -971,7 +971,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	synchronized (glob.oc) {
 	    for (Gob tg : glob.oc) {
 		name = tg.resname();
-		if ((tg.sc!=null)&&(name.indexOf("herbs")>=0)) {
+		if ((tg.sc!=null)&&(Config.foragObjectList.contains(name))) {
 			drawradius(g, tg.sc, 10);
 		}
 	    }

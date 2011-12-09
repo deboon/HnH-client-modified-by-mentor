@@ -268,79 +268,84 @@ public class MCache {
     }
 	
     public Tile[] gettrans(Coord tc) {
-	Grid g;
-	synchronized(grids) {
-	    Coord gc = tc.div(cmaps);
-	    if((last != null) && last.gc.equals(gc))
-		g = last;
-	    else
-		last = g = grids.get(gc);
-	}
-	if(g == null)
+				Grid g;
+				synchronized(grids) {
+						Coord gc = tc.div(cmaps);
+						if((last != null) && last.gc.equals(gc))
+								g = last;
+						else
+								last = g = grids.get(gc);
+				}
+				if(g == null)
 	    return(null);
-	Coord gtc = tc.mod(cmaps);
-	if(g.tcache[gtc.x][gtc.y] == null) {
-	    int tr[][] = new int[3][3];
-	    for(int y = -1; y <= 1; y++) {
-		for(int x = -1; x <= 1; x++) {
-		    if((x == 0) && (y == 0))
-			continue;
-		    int tn = gettilen(tc.add(new Coord(x, y)));
-		    if(tn < 0)
-			return(null);
-		    tr[x + 1][y + 1] = tn;
-		}
-	    }
-	    if(tr[0][0] >= tr[1][0]) tr[0][0] = -1;
-	    if(tr[0][0] >= tr[0][1]) tr[0][0] = -1;
-	    if(tr[2][0] >= tr[1][0]) tr[2][0] = -1;
-	    if(tr[2][0] >= tr[2][1]) tr[2][0] = -1;
-	    if(tr[0][2] >= tr[0][1]) tr[0][2] = -1;
-	    if(tr[0][2] >= tr[1][2]) tr[0][2] = -1;
-	    if(tr[2][2] >= tr[2][1]) tr[2][2] = -1;
-	    if(tr[2][2] >= tr[1][2]) tr[2][2] = -1;
-	    int bx[] = {0, 1, 2, 1};
-	    int by[] = {1, 0, 1, 2};
-	    int cx[] = {0, 2, 2, 0};
-	    int cy[] = {0, 0, 2, 2};
-	    ArrayList<Tile> buf = new ArrayList<Tile>();
-	    for(int i = gettilen(tc) - 1; i >= 0; i--) {
-		if((sets[i] == null) || (sets[i].btrans == null) || (sets[i].ctrans == null))
-		    continue;
-		int bm = 0, cm = 0;
-		for(int o = 0; o < 4; o++) {
-		    if(tr[bx[o]][by[o]] == i)
-			bm |= 1 << o;
-		    if(tr[cx[o]][cy[o]] == i)
-			cm |= 1 << o;
-		}
-		if(bm != 0)
-		    buf.add(sets[i].btrans[bm - 1].pick(randoom(tc)));
-		if(cm != 0)
-		    buf.add(sets[i].ctrans[cm - 1].pick(randoom(tc)));
-	    }
-	    g.tcache[gtc.x][gtc.y] = buf.toArray(new Tile[0]);
-	}
-	return(g.tcache[gtc.x][gtc.y]);
+				Coord gtc = tc.mod(cmaps);
+				if(g.tcache[gtc.x][gtc.y] == null) {
+						int tr[][] = new int[3][3];
+						for(int y = -1; y <= 1; y++) {
+								for(int x = -1; x <= 1; x++) {
+										if((x == 0) && (y == 0))
+												continue;
+										int tn = gettilen(tc.add(new Coord(x, y)));
+										if(tn < 0)
+												return(null);
+										tr[x + 1][y + 1] = tn;
+								}
+						}
+						if(tr[0][0] >= tr[1][0]) tr[0][0] = -1;
+						if(tr[0][0] >= tr[0][1]) tr[0][0] = -1;
+						if(tr[2][0] >= tr[1][0]) tr[2][0] = -1;
+						if(tr[2][0] >= tr[2][1]) tr[2][0] = -1;
+						if(tr[0][2] >= tr[0][1]) tr[0][2] = -1;
+						if(tr[0][2] >= tr[1][2]) tr[0][2] = -1;
+						if(tr[2][2] >= tr[2][1]) tr[2][2] = -1;
+						if(tr[2][2] >= tr[1][2]) tr[2][2] = -1;
+						int bx[] = {0, 1, 2, 1};
+						int by[] = {1, 0, 1, 2};
+						int cx[] = {0, 2, 2, 0};
+						int cy[] = {0, 0, 2, 2};
+						ArrayList<Tile> buf = new ArrayList<Tile>();
+						for(int i = gettilen(tc) - 1; i >= 0; i--) {
+								if((sets[i] == null) || (sets[i].btrans == null) || (sets[i].ctrans == null))
+										continue;
+								int bm = 0, cm = 0;
+								for(int o = 0; o < 4; o++) {
+										if(tr[bx[o]][by[o]] == i)
+												bm |= 1 << o;
+										if(tr[cx[o]][cy[o]] == i)
+												cm |= 1 << o;
+								}
+								if(bm != 0){
+										buf.add(sets[i].btrans[bm - 1].pick(randoom(tc)));
+										buf.get(buf.size()-1).id = i;
+								}
+								if(cm != 0){
+										buf.add(sets[i].ctrans[cm - 1].pick(randoom(tc)));
+										buf.get(buf.size()-1).id = i;
+								}
+						}
+						g.tcache[gtc.x][gtc.y] = buf.toArray(new Tile[0]);
+				}
+				return(g.tcache[gtc.x][gtc.y]);
     }
 
     public Tile getground(Coord tc) {
-	Grid g;
-	synchronized(grids) {
-	    Coord gc = tc.div(cmaps);
-	    if((last != null) && last.gc.equals(gc))
-		g = last;
-	    else
-		last = g = grids.get(gc);
-	}
-	if(g == null)
-	    return(null);
-	Coord gtc = tc.mod(cmaps);
-	if(g.gcache[gtc.x][gtc.y] == null) {
-	    Tileset ts = sets[g.gettile(gtc)];
-	    g.gcache[gtc.x][gtc.y] = ts.ground.pick(randoom(tc));
-	}
-	return(g.gcache[gtc.x][gtc.y]);
+				Grid g;
+				synchronized(grids) {
+						Coord gc = tc.div(cmaps);
+						if((last != null) && last.gc.equals(gc))
+								g = last;
+						else
+								last = g = grids.get(gc);
+				}
+				if(g == null)
+						return(null);
+				Coord gtc = tc.mod(cmaps);
+				if(g.gcache[gtc.x][gtc.y] == null) {
+						Tileset ts = sets[g.gettile(gtc)];
+						g.gcache[gtc.x][gtc.y] = ts.ground.pick(randoom(tc));
+				}
+				g.gcache[gtc.x][gtc.y].id = g.tiles[gtc.x][gtc.y];
+				return(g.gcache[gtc.x][gtc.y]);
     }
 
     public int gettilen(Coord tc) {

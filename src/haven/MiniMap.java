@@ -1,7 +1,7 @@
 /*
  *  This file is part of the Haven & Hearth game client.
  *  Copyright (C) 2009 Fredrik Tolf <fredrik@dolda2000.com>, and
- *                     BjÃ¶rn Johannessen <johannessen.bjorn@gmail.com>
+ *                     Björn Johannessen <johannessen.bjorn@gmail.com>
  *
  *  Redistribution and/or modification of this file is subject to the
  *  terms of the GNU Lesser General Public License, version 3, as
@@ -68,6 +68,7 @@ public class MiniMap extends Widget {
     boolean dm = false;
     public int scale = 4;
     double scales[] = {0.5, 0.66, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2};
+	Coord pcoord;
     
     public double getScale() {
         return scales[scale];
@@ -376,6 +377,9 @@ public class MiniMap extends Widget {
 		    if(ptc == null)
 			continue;
 		    ptc = ptc.div(tilesz).add(tc.inv()).add(hsz.div(2));
+			if(m.gobid == ui.mainview.playergob){
+				pcoord = ptc.add(plx.layer(Resource.negc).cc.inv());
+			}
 		    g.chcolor(m.col.getRed(), m.col.getGreen(), m.col.getBlue(), 128);
 		    g.image(plx.layer(Resource.imgc).tex(), ptc.add(plx.layer(Resource.negc).cc.inv()));
 		    g.chcolor();
@@ -450,10 +454,15 @@ public class MiniMap extends Widget {
     }
     
     public boolean mousedown(Coord c, int button) {
-	if(button == 1) {
-	    ui.grabmouse(this);
-	    dm = true;
-	    doff = c;
+	switch(button){
+	case 1: ui.grabmouse(this);
+			dm = true;
+			doff = c; break;
+	case 3: if(pcoord == null)
+				break;
+			Coord of = c.sub(pcoord);
+			Coord pc = ui.sess.glob.oc.getgob(ui.mainview.playergob).getc();
+			ui.mainview.wdgmsg("click",Coord.fake,pc.add(of.x*ui.mainview.east*MapView.ONE_TILE,of.y*MapView.ONE_TILE),1,ui.modflags());
 	}
 	return(true);
     }

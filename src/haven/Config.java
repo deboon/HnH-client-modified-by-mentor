@@ -46,6 +46,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.awt.event.KeyEvent;
+import java.awt.Color;
 
 import ender.GoogleTranslator;
 
@@ -101,6 +102,7 @@ public class Config {
     public static boolean showq;
     public static boolean showpath;
     public static Map<String, Map<String, Float>> FEPMap = new HashMap<String,Map<String, Float>>();	
+		public static Map<Integer,Color> tile_c = new HashMap<Integer,Color>(50);
     public static int tiles_per_click = 5;
     public static int wheel_to_real = 20;
     public static Map<String,Resource.Neg> PAca = new HashMap<String,Resource.Neg>();
@@ -148,6 +150,7 @@ public class Config {
 	    loadkopts();
 	    loadSmileys();
 	    loadFEP();
+			loadTilec();
 	} catch(java.net.MalformedURLException e) {
 	    throw(new RuntimeException(e));
 	}
@@ -172,6 +175,29 @@ public class Config {
 	    e.printStackTrace();
 	    System.exit(1);
 	}
+    }
+
+private static void loadTilec() {
+				try{
+						BufferedReader br = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream("tilec.conf"))));
+						String l;
+						String k;
+						String objs[];
+						while( (l=br.readLine()) != null) {
+								objs = l.split("=");
+								k = objs[0];
+								objs = objs[1].split(",");
+								tile_c.put(Integer.parseInt(k),
+													 new Color(Integer.parseInt(objs[0]),
+																		 Integer.parseInt(objs[1]),
+																		 Integer.parseInt(objs[2]),
+																		 Integer.parseInt(objs[3])));
+						}
+						br.close();
+				}catch(Exception e){
+						e.printStackTrace();
+						System.exit(1);
+				}
     }
     
     private static void loadFEP() {

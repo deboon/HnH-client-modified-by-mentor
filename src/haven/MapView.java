@@ -854,21 +854,24 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	    throw(new Loading());
 	return(ol);
     }
-	
+		static final int FULL_COL = 0xFFFFFFFF;
     private void drawtile(GOut g, Coord tc, Coord sc) {
-	Tile t;
-		
-	try {
-	    t = getground(tc);
-	    //t = gettile(tc).ground.pick(0);
-	    g.image(t.tex(), sc);
-	    //g.setColor(FlowerMenu.pink);
-	    //Utils.drawtext(g, Integer.toString(t.i), sc);
-	    for(Tile tt : gettrans(tc)) {
-		g.image(tt.tex(), sc);
-	    }
-	} catch (Loading e) {}
-    }
+				Tile t;
+				Color c;
+				try{
+				t = getground(tc);
+				if((c=Config.tile_c.get(t.id)) != null && c.getRGB() != FULL_COL)
+						g.chcolor(c);
+				g.image(t.tex(), sc);
+				g.chcolor();
+				for(Tile tt : gettrans(tc)) {
+						if((c=Config.tile_c.get(tt.id)) != null && c.getRGB() != FULL_COL)
+								g.chcolor(c);
+						g.image(tt.tex(), sc);
+						g.chcolor();
+				}
+				}catch(Loading l){}
+		}
     
     private void drawol(GOut g, Coord tc, Coord sc) {
 	int ol;
@@ -1123,14 +1126,14 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	tc.y += (sz.x / (2 * stw)) - (sz.y / (2 * sth));
 	for(y = 0; y < (sz.y / sth) + 2; y++) {
 	    for(x = 0; x < (sz.x / stw) + 3; x++) {
-		for(i = 0; i < 2; i++) {
-		    ctc = tc.add(new Coord(x + y, -x + y + i));
-		    sc = m2s(ctc.mul(tilesz)).add(oc);
-		    sc.x -= tilesz.x * 2;
-		    drawtile(g, ctc, sc);
-		    sc.x += tilesz.x * 2;
-		    if(!Config.newclaim){drawol(g, ctc, sc);}
-		}
+					for(i = 0; i < 2; i++) {
+							ctc = tc.add(new Coord(x + y, -x + y + i));
+							sc = m2s(ctc.mul(tilesz)).add(oc);
+							sc.x -= tilesz.x * 2;
+							drawtile(g, ctc, sc);
+							sc.x += tilesz.x * 2;
+							if(!Config.newclaim){drawol(g, ctc, sc);}
+					}
 	    }
 	}
 	if(Config.newclaim){drawols(g, oc);}

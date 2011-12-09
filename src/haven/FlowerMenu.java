@@ -222,6 +222,16 @@ public class FlowerMenu extends Widget {
 	super.draw(g);
     }
     
+    //mentor
+    public void SelectOpt(String OptName) {
+        for (int i = 0; i < opts.length; i++) {
+            if (opts[i].name.equals(OptName)) {
+                wdgmsg(this, "cl", opts[i].num);
+                break;
+            }
+        }
+    }
+    
     public boolean type(char key, java.awt.event.KeyEvent ev) {
 	if((key >= '0') && (key <= '9')) {
 	    int opt = (key == '0')?10:(key - '1');

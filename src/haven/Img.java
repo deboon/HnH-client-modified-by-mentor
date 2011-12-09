@@ -29,19 +29,21 @@ package haven;
 public class Img extends Widget {
     private Tex img;
     public boolean hit = false;
+    public String texname;
 	
     static {
 	Widget.addtype("img", new WidgetFactory() {
 		public Widget create(Coord c, Widget parent, Object[] args) {
 		    Tex tex;
+		    String TexName = (String)args[0];
 		    if(args.length > 1) {
-			Resource res = Resource.load((String)args[0], (Integer)args[1]);
+			Resource res = Resource.load(TexName, (Integer)args[1]);
 			res.loadwait();
 			tex = res.layer(Resource.imgc).tex();
 		    } else {
-			tex = Resource.loadtex((String)args[0]);
+			tex = Resource.loadtex(TexName);
 		    }
-		    Img ret = new Img(c, tex, parent);
+		    Img ret = new Img(c, tex, TexName, parent);
 		    if(args.length > 2)
 			ret.hit = (Integer)args[2] != 0;
 		    return(ret);
@@ -53,6 +55,12 @@ public class Img extends Widget {
 	synchronized(img) {
 	    g.image(img, Coord.z);
 	}
+    }
+	
+    public Img(Coord c, Tex img, String texname, Widget parent) {
+	super(c, img.sz(), parent);
+	this.img = img;
+        this.texname = texname;
     }
 	
     public Img(Coord c, Tex img, Widget parent) {

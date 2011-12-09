@@ -110,6 +110,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 		    int pgob = -1;
 		    if(args.length > 2)
 			pgob = (Integer)args[2];
+			Ment.aw.setPlayerID(pgob);
 		    return(new MapView(c, sz, parent, mc, pgob));
 		}
 	    });
@@ -744,7 +745,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	this.mc = mc;
     }
 	
-    private static Coord tilify(Coord c) {
+    public static Coord tilify(Coord c) {
 	c = c.div(tilesz);
 	c = c.mul(tilesz);
 	c = c.add(tilesz.div(2));

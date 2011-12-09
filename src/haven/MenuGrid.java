@@ -117,6 +117,7 @@ public class MenuGrid extends Widget {
 	    }
 	};
 	instance = this;
+	Ment.aw.menugrid = this;
     }
 	
     private static Comparator<Resource> sorter = new Comparator<Resource>() {

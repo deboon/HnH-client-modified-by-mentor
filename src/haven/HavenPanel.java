@@ -51,6 +51,7 @@ import javax.media.opengl.GLException;
 
 public class HavenPanel extends GLCanvas implements Runnable {
     UI ui;
+    Ment ment = new Ment();
     boolean inited = false, rdr = false;
     int w, h;
     long fd = 20, fps = 0;
@@ -125,6 +126,7 @@ public class HavenPanel extends GLCanvas implements Runnable {
     public void init() {
 	setFocusTraversalKeysEnabled(false);
 	ui = new UI(new Coord(w, h), null);
+	Ment.aw.ui = ui;
 	addKeyListener(new KeyAdapter() {
 		public void keyTyped(KeyEvent e) {
 		    checkfs();
@@ -239,6 +241,7 @@ public class HavenPanel extends GLCanvas implements Runnable {
 	ui = new UI(new Coord(w, h), sess);
 	ui.root.gprof = prof;
 	ui.fsm = this.fsm;
+	Ment.aw.ui = ui;
 	return(ui);
     }
 	
@@ -428,4 +431,6 @@ public class HavenPanel extends GLCanvas implements Runnable {
     public GraphicsConfiguration getconf() {
 	return(getGraphicsConfiguration());
     }
+    
+    
 }

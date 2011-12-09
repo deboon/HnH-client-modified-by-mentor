@@ -87,7 +87,7 @@ public class Item extends Widget implements DTarget {
 	hm_c.put("Emerald Dragonfly",new Float[]{800f,4f,2f});
 	hm_c.put("Peculiar Flotsam",new Float[]{3000f,4f,9f});
 	hm_c.put("Dandelion",new Float[]{50f,0.67f,1f});
-	hm_c.put("Edelweiß",new Float[]{4000f,7f,8f});
+	hm_c.put("Edelweiï¿½",new Float[]{4000f,7f,8f});
 	hm_c.put("Edelweiss",new Float[]{4000f,7f,8f});
 	hm_c.put("Chiming Bluebell",new Float[]{8000f,18f,7f});
 	hm_c.put("Royal Toadstool",new Float[]{600f,3.33f,3f});
@@ -106,7 +106,7 @@ public class Item extends Widget implements DTarget {
 	hm_c.put("Tangled Bramble",new Float[]{1000f,10f,3f});
 	hm_c.put("Straw Doll",new Float[]{850f,4.5f,6f});
 	hm_c.put("Uncommon Snapdragon",new Float[]{1000f,8f,4f});
-	hm_c.put("Völva's Wand",new Float[]{3000f,12f,8f});
+	hm_c.put("Vï¿½lva's Wand",new Float[]{3000f,12f,8f});
 	hm_c.put("Poppy Flower",new Float[]{500f,16f,1f});
 	hm_c.put("Washed-up Bladderwrack",new Float[]{750f,9f,3f});
 	hm_c.put("Enthroned Toad",new Float[]{4000f,15f,10f});
@@ -170,6 +170,16 @@ public class Item extends Widget implements DTarget {
 	    sz = new Coord(30, 30);
 	}
     }
+    
+    public String GetResName() {
+        if (res.get() != null)
+            return res.get().name;
+        else
+	    return  "";
+    }
+    
+    public int coord_x() { return c.div(31).x; }
+    public int coord_y() { return c.div(31).y; }
 
     public void draw(GOut g) {
 	final Resource ttres;
@@ -351,6 +361,8 @@ public class Item extends Widget implements DTarget {
 	    doff = drag;
 	    ui.grabmouse(this);
 	    this.c = ui.mc.add(doff.inv());
+	    Ment.aw.DragItem = this;
+	    Ment.aw.send("HaveDragItem|true|"+this.GetResName());
 	}
     }
 
@@ -372,8 +384,9 @@ public class Item extends Widget implements DTarget {
 		continue;
 	    Coord cc = w.xlate(wdg.c, true);
 	    if(c.isect(cc, (wdg.hsz == null)?wdg.sz:wdg.hsz)) {
-		if(dropon(wdg, c.add(cc.inv())))
+		if(dropon(wdg, c.add(cc.inv()))) {
 		    return(true);
+		}
 	    }
 	}
 	if(w instanceof DTarget) {
@@ -408,6 +421,13 @@ public class Item extends Widget implements DTarget {
 	this.res = res;
 	sh = null;
 	decq(q);
+        if(this.dm) {
+            synchronized (Ment.aw.ResMonitor) {
+                Ment.aw.send("DragItemResChanged|true");
+                Ment.aw.DragItemResChanged = true;
+                Ment.aw.ResMonitor.notifyAll();
+            }
+        }
     }
 
     public void uimsg(String name, Object... args)  {

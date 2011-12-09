@@ -94,8 +94,35 @@ public class IMeter extends Widget {
 	    for(int i = 0; i < args.length; i += 2)
 		meters.add(new Meter((Color)args[i], (Integer)args[i + 1]));
 	    this.meters = meters;
+	    if (bgname.equals("gfx/hud/meter/nrj")) {
+            	Ment.aw.Stamina = meters.get(0).a;
+            	Ment.aw.send("Stamina|" + Ment.aw.Stamina);
+            }
 	} else if(msg == "tt") {
 	    tooltip = args[0];
+	    if (bgname.equals("gfx/hud/meter/hp") && (args[0].toString().indexOf("Health:")>=0)) {
+                String s = args[0].toString();
+                String [] temp = null;
+                s = s.replaceAll("Health: ", "");
+                temp = s.split("/");
+                if (temp != null) {
+                    Ment.aw.HP = Integer.parseInt(temp[0]);
+                    Ment.aw.send("HP|"+Ment.aw.HP);
+                }
+            }
+            if (bgname.equals("gfx/hud/meter/hngr")) {
+                String s = (String)args[0];
+                String r = "";
+                for (int j = s.indexOf('(')+1; j < s.length(); j++) {
+                    if (s.charAt(j) == '%')
+                        break;
+                    r += s.charAt(j);
+                }
+                if (r.length() > 0) {
+                    Ment.aw.Hunger = Integer.parseInt(r);
+                    Ment.aw.send("Hunger|" + Ment.aw.Hunger);
+                }
+            }
 	} else {
 	    super.uimsg(msg, args);
 	}

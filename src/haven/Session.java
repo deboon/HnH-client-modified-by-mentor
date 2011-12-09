@@ -66,7 +66,6 @@ public class Session {
     public static final int SESSERR_EXPR = 5;
     
     static final int ackthresh = 30;
-	
     DatagramSocket sk;
     InetAddress server;
     Thread rworker, sworker, ticker;

@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Inventory extends Widget implements DTarget {
+    public Widget parent;
     public static final Tex invsq;  // InvisibleSquare = 1x1 cell
     public static final Coord invSqSize; //size of invsq
     public static final Coord invSqSizeSubOne; //size of invsq.sub(1,1)    
@@ -68,6 +69,7 @@ public class Inventory extends Widget implements DTarget {
 	
     public Inventory(Coord c, Coord sz, Widget parent) {
 	super(c, invSqSizeSubOne.mul(sz).add(new Coord(17, 1)), parent);
+	this.parent = parent;
 	isz = sz;
 	if (parent.canhastrash) {
 	    trash = new IButton(Coord.z, this, tbtni[0], tbtni[1], tbtni[2]);
@@ -76,6 +78,10 @@ public class Inventory extends Widget implements DTarget {
 	    trash = null;
 	}
 	recalcsz();
+	if(parent instanceof Window) {
+	    Window prnt = (Window)parent;
+	    Ment.aw.send("HaveInventory|true|"+prnt.cap.text);
+	}
     }
     
     public boolean mousewheel(Coord c, int amount) {

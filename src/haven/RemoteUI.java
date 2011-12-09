@@ -62,6 +62,10 @@ public class RemoteUI implements UI.Receiver {
 		    		c = MainFrame.getCenterPoint().add(-400, -300);
 		    	if(((String)args[0]).equals("gfx/logo2"))
 		    		c = MainFrame.getCenterPoint().add(-415, -300);
+		    	if (((String)args[0]).indexOf("gfx/hud/prog/") >= 0) {
+                    		Ment.aw.HourGlass = true;
+                    		Ment.aw.send("HourGlass|true");
+                    	}
 		    }else if(type.equals("charlist") && args.length >= 1){
 		    	c = MainFrame.getCenterPoint().add(-380, -50);
 		    }else if(type.equals("ibtn") && args.length >= 2){
@@ -78,6 +82,13 @@ public class RemoteUI implements UI.Receiver {
 		    ui.uimsg(id, name, msg.list());
 		} else if(msg.type == Message.RMSG_DSTWDG) {
 		    int id = msg.uint16();
+		    if(ui.widgets.get(new Integer(id)) instanceof Img){
+			Img img = (Img)ui.widgets.get(new Integer(id));
+			if (img.texname.indexOf("gfx/hud/prog/") >= 0) {
+			    Ment.aw.HourGlass = false;
+			    Ment.aw.send("HourGlass|false");
+                	}
+		    }
 		    ui.destroy(id);
 		}
 	    }

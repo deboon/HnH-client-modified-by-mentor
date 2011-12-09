@@ -35,6 +35,7 @@ import java.awt.event.InputEvent;
 
 public class UI {
     static public UI instance;
+    public FlowerMenu flower_menu = null; // mentor
     public RootWidget root;
     public SlenHud slen;
     public MenuGrid mnu;
@@ -178,6 +179,23 @@ public class UI {
 	    wdg.binded();
 	    if(wdg instanceof MapView)
 		mainview = (MapView)wdg;
+	    if (wdg instanceof FlowerMenu) {
+                flower_menu = (FlowerMenu)wdg;
+                Ment.aw.FlowerMenuReady = true;
+                Ment.aw.send("FlowerMenuReady|true");
+            }
+	}
+    }
+
+    private void ment_remove_wdg(Widget wdg) {
+    	if (wdg instanceof Inventory) {
+    	    Window prnt = (Window)wdg.parent;
+    	    Ment.aw.send("HaveInventory|false|"+prnt.cap.text);
+	}
+	if (wdg instanceof FlowerMenu) {
+	    Ment.aw.FlowerMenuReady = false;
+	    Ment.aw.send("FlowerMenuReady|false");
+	    flower_menu = null;
 	}
     }
 	
@@ -195,11 +213,13 @@ public class UI {
 	    widgets.remove(id);
 	    rwidgets.remove(wdg);
 	}
-	for(Widget child = wdg.child; child != null; child = child.next)
+	for(Widget child = wdg.child; child != null; child = child.next) {
 	    removeid(child);
+	}
     }
 	
     public void destroy(Widget wdg) {
+    	ment_remove_wdg(wdg);
 	if((mousegrab != null) && mousegrab.hasparent(wdg))
 	    mousegrab = null;
 	if((keygrab != null) && keygrab.hasparent(wdg))

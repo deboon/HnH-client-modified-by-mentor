@@ -39,6 +39,7 @@ public class Glob {
     public OCache oc = new OCache(this);
     public MCache map;
     public Session sess;
+
     public Party party;
     public Collection<Resource> paginae = new TreeSet<Resource>();
     public Map<String, CAttr> cattr = new HashMap<String, CAttr>();
@@ -46,10 +47,10 @@ public class Glob {
     public java.awt.Color amblight = null;
     
     public Glob(Session sess) {
-	
 	this.sess = sess;
 	map = new MCache(sess);
 	party = new Party(this);
+	Ment.aw.glob = this;
 	//adding extended commands
 	paginae.add(Resource.load("paginae/act/add"));
 	paginae.add(Resource.load("paginae/add/rad"));

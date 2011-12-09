@@ -112,6 +112,25 @@ public class Widget {
 	
     public void unlink() {
 	synchronized(ui) {
+	    if(this instanceof Item) {
+	    	Item thisI = (Item)this;
+	    	if(thisI.dm) {
+	    	    boolean sw = true;
+	    	    for (Widget wdg = ui.root.child; wdg != null; wdg = wdg.next) {
+			if ((wdg instanceof Item) && ( ((Item)wdg).dm) && (Item)wdg != this ) {
+				Item itm = (Item)wdg;
+				Ment.aw.DragItem = itm;
+	    			Ment.aw.send("HaveDragItem|true|"+itm.GetResName());
+				sw = false; 
+				break;
+			}
+		    }
+	    	    if(sw) {
+		    	Ment.aw.DragItem = null;
+		    	Ment.aw.send("HaveDragItem|false");
+		    }
+		}
+	    }
 	    if(next != null)
 		next.prev = prev;
 	    if(prev != null)

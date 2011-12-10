@@ -35,7 +35,7 @@ public class Ment implements Runnable {
         @Override
         public void run() {
             System.out.println("Bot Started");
-            while (Hunger > 50) {
+            while (Hunger > 57) {
                 int well_obj = FindMapObj("well", 4, 0, 0);
                 int barrel_obj = FindMapObj("barrel", 4, 0, 0);
                 if ((well_obj == 0) && (barrel_obj == 0)) {

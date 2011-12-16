@@ -37,86 +37,101 @@ import com.sun.opengl.util.Screenshot;
 
 public class RootWidget extends ConsoleHost {
     public static Resource defcurs = Resource.load("gfx/hud/curs/arw");
-	public static Hashtable<Integer,IKeyFunction> skeys = new Hashtable<Integer,IKeyFunction>();
-	public static Hashtable<Character,IKeyFunction> keys = new Hashtable<Character,IKeyFunction>();
-	public static Hashtable<Character,IKeyFunction> akeys = new Hashtable<Character,IKeyFunction>();
-	public static Hashtable<Integer,IKeyFunction> ckeys = new Hashtable<Integer,IKeyFunction>();
+    public static Hashtable<Integer, IKeyFunction> skeys = new Hashtable<Integer, IKeyFunction>();
+    public static Hashtable<Character, IKeyFunction> keys = new Hashtable<Character, IKeyFunction>();
+    public static Hashtable<Character, IKeyFunction> akeys = new Hashtable<Character, IKeyFunction>();
+    public static Hashtable<Integer, IKeyFunction> ckeys = new Hashtable<Integer, IKeyFunction>();
     Logout logout = null;
     Profile gprof;
     boolean afk = false;
     public static boolean screenshot = false;
     public static boolean names_ready = false;
-	
-	static{
-	reloadkeys();
-	}
-	
-	public static void reloadkeys(){
-		skeys.clear();
-		ckeys.clear();
-		for(IKeyFunction kf: KeyFunction.funcs){
-			switch(kf.getspec()){
-			case KeyFunction.NORMAL: keys.put((char)kf.getkey(),kf);  break;
-			case KeyFunction.SPECIAL:skeys.put(kf.getkey(),kf);		  break;
-			case KeyFunction.ALT:	 akeys.put((char)kf.getkey(),kf); break;
-			case KeyFunction.CTRL:	 ckeys.put(kf.getkey(),kf);		  break;
-			}
-		}
-	}
-	
+
+    static {
+        reloadkeys();
+    }
+
+    public static void reloadkeys() {
+        skeys.clear();
+        ckeys.clear();
+        for (IKeyFunction kf : KeyFunction.funcs) {
+            switch (kf.getspec()) {
+                case KeyFunction.NORMAL:
+                    keys.put((char) kf.getkey(), kf);
+                    break;
+                case KeyFunction.SPECIAL:
+                    skeys.put(kf.getkey(), kf);
+                    break;
+                case KeyFunction.ALT:
+                    akeys.put((char) kf.getkey(), kf);
+                    break;
+                case KeyFunction.CTRL:
+                    ckeys.put(kf.getkey(), kf);
+                    break;
+            }
+        }
+    }
+
     public RootWidget(UI ui, Coord sz) {
-	super(ui, new Coord(0, 0), sz);
-	setfocusctl(true);
-	cursor = defcurs;
+        super(ui, new Coord(0, 0), sz);
+        setfocusctl(true);
+        cursor = defcurs;
     }
-	
+
     public boolean globtype(char key, KeyEvent ev) {
-		if(!super.globtype(key, ev)) {
-			if(ev.isAltDown() && akeys.get(key) != null)
-				akeys.get(key).dokey(ui,ev);
-			else if(keys.get(key) != null)
-				keys.get(key).dokey(ui,ev);
-		}
-		return(true);
+        if (!super.globtype(key, ev)) {
+            if (ev.isAltDown() && akeys.get(key) != null)
+                akeys.get(key).dokey(ui, ev);
+            else if (keys.get(key) != null)
+                keys.get(key).dokey(ui, ev);
+        }
+        return (true);
     }
-	
-	public boolean keydown(KeyEvent ev){
-		if(!super.keydown(ev)){
-		    if ((ev.getKeyCode() == KeyEvent.VK_Y) && ((ev.getModifiers() & ev.CTRL_MASK) != 0)) {
-			Config.render_enable = !Config.render_enable;
-			Config.saveOptions();
-			System.out.println("Render is " + (Config.render_enable ? "ON" : "OFF"));
-			return (true);
-		    }
-			if(MenuGrid.instance != null && (MenuGrid.instance.digitbar.checkKey((char)0,ev) || MenuGrid.instance.functionbar.checkKey((char)0,ev) || MenuGrid.instance.numpadbar.checkKey((char)0,ev)))
-				return(true);
-			if(ev.isControlDown() && ckeys.get(ev.getKeyCode()) != null)
-				ckeys.get(ev.getKeyCode()).dokey(ui,ev);
-			else if(skeys.get(ev.getKeyCode()) != null)
-				skeys.get(ev.getKeyCode()).dokey(ui,ev);
-		}
-		return(true);
-	}
+
+    public boolean keydown(KeyEvent ev) {
+        if (!super.keydown(ev)) {
+            if ((ev.getKeyCode() == KeyEvent.VK_Y) && ((ev.getModifiers() & ev.CTRL_MASK) != 0)) {
+                Config.render_enable = !Config.render_enable;
+                Config.saveOptions();
+                System.out.println("Render is " + (Config.render_enable ? "ON" : "OFF"));
+                return (true);
+            } else if((ev.getKeyCode() == KeyEvent.VK_Z) && ((ev.getModifiers() & ev.CTRL_MASK) != 0)) {
+                Config.assign_to_tile = !Config.assign_to_tile;
+            }
+            if (MenuGrid.instance != null && (MenuGrid.instance.digitbar.checkKey((char) 0, ev) || MenuGrid.instance.functionbar.checkKey((char) 0, ev) || MenuGrid.instance.numpadbar.checkKey((char) 0, ev)))
+                return (true);
+            if (ev.isControlDown() && ckeys.get(ev.getKeyCode()) != null)
+                ckeys.get(ev.getKeyCode()).dokey(ui, ev);
+            else if (skeys.get(ev.getKeyCode()) != null)
+                skeys.get(ev.getKeyCode()).dokey(ui, ev);
+        }
+        return (true);
+    }
 
     public void draw(GOut g) {
-	if(screenshot&&Config.sshot_noui){visible = false;}
-	super.draw(g);
-	drawcmd(g, new Coord(20, 580));
-	if(screenshot && (!Config.sshot_nonames || names_ready)){
-	    visible = true;
-	    screenshot = false;
-	    try {
-		Coord s = MainFrame.getInnerSize();
-		String stamp = Utils.sessdate(System.currentTimeMillis());
-		String ext = Config.sshot_compress?".jpg":".png";
-		File f = new File("screenshots/SS_"+stamp+ext);
-		f.mkdirs();
-		Screenshot.writeToFile(f, s.x, s.y);
-	    } catch (GLException e){e.printStackTrace();}
-	    catch (IOException e){e.printStackTrace();}
-	}
+        if (screenshot && Config.sshot_noui) {
+            visible = false;
+        }
+        super.draw(g);
+        drawcmd(g, new Coord(20, 580));
+        if (screenshot && (!Config.sshot_nonames || names_ready)) {
+            visible = true;
+            screenshot = false;
+            try {
+                Coord s = MainFrame.getInnerSize();
+                String stamp = Utils.sessdate(System.currentTimeMillis());
+                String ext = Config.sshot_compress ? ".jpg" : ".png";
+                File f = new File("screenshots/SS_" + stamp + ext);
+                f.mkdirs();
+                Screenshot.writeToFile(f, s.x, s.y);
+            } catch (GLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
+
     public void error(String msg) {
     }
 }

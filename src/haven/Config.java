@@ -102,6 +102,7 @@ public class Config {
     public static boolean sysCursor;
     public static boolean showq;
     public static boolean showpath;
+    public static boolean assign_to_tile = false;
     public static Map<String, Map<String, Float>> FEPMap = new HashMap<String, Map<String, Float>>();
     public static Map<String, CurioInfo> curios = new HashMap<String, CurioInfo>();
     public static Map<Integer, Color> tile_c = new HashMap<Integer, Color>(50);

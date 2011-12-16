@@ -44,6 +44,7 @@
             <fileset file="etc/fep.conf"/>
             <fileset file="etc/pa"/>
             <fileset file="etc/tilec.conf"/>
+            <fileset file="etc/curio.conf"/>
         </copy>
     </target>
 

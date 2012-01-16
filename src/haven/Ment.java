@@ -119,6 +119,107 @@ public class Ment implements Runnable {
         }
     }
 
+    private class Bstarve implements Runnable {
+
+        @Override
+        public void run() {
+            System.out.println("[Bstarve]: Bot Started");
+            while (Hunger > 60) {
+                if(!HaveInventory("Inventory")) {
+                    if (!OpenInventory()) {
+                        System.out.println("[Bstarve]: Can't open Inventory... Lets die now.");
+                        return;
+                    }
+                }
+                while (!HaveInventory("Inventory")) {
+                    Sleep(1000);
+                }
+                Coord myc = MyCoord();
+
+                Inventory("Inventory", 0, 0, "take", 0);
+                while (DragItem == null) {
+                    Sleep(300);
+                }
+                DoInteractClick(myc,0);
+                //DoClick(myc, 3, 0);
+                WaitTillDragResChanged();
+                DropToInventory("Inventory", new Coord(0, 0));
+                while (DragItem != null) {
+                    Sleep(300);
+                }
+                Inventory("Inventory", 0, 0, "iact", 0);
+                while (!FlowerMenuReady) {
+                    Sleep(300);
+                }
+                SelectFlowerMenuOpt("Drink");
+                while (!HourGlass) {
+                    Sleep(30);
+                }
+                while (HourGlass) {
+                    Sleep(30);
+                }
+                SendAction("plow");
+                DoClick(myc, 1, 0);
+                while (!HourGlass) {
+                    Sleep(30);
+                }
+                while (HourGlass) {
+                    Sleep(30);
+                }
+                SendAction("plow");
+                DoClick(myc, 1, 0);
+                while (!HourGlass) {
+                    Sleep(30);
+                }
+                while (HourGlass) {
+                    Sleep(30);
+                }
+                SendAction("plow");
+                DoClick(myc, 1, 0);
+                while (!HourGlass) {
+                    Sleep(30);
+                }
+                while (HourGlass) {
+                    Sleep(30);
+                }
+            }
+            System.out.println("[Bstarve]: End of Bot");
+        }
+
+        public void cancel() {
+            botThread.interrupt();
+            botThread = null;
+        }
+    }
+
+    private class Mussel implements Runnable {
+
+        @Override
+        public void run() {
+            System.out.println("[Mussel]: Bot Started");
+            while (FindMapObj("mussel", 5, 0, 0) != 0) {
+                int mussel = FindMapObj("mussel", 5, 0, 0);
+                DoObjClick(mussel, 3, 0);
+                while (!FlowerMenuReady) {
+                    Sleep(300);
+                }
+                SelectFlowerMenuOpt("Pick");
+                while (!HourGlass) {
+                    Sleep(30);
+                }
+                while (HourGlass) {
+                    Sleep(30);
+                }
+            }
+            System.out.println("[Mussel]: End of Bot");
+        }
+
+        public void cancel() {
+            botThread.interrupt();
+            botThread = null;
+        }
+    }
+
     public void Sleep(int ms) {
         try {
             Thread.sleep(ms);
@@ -194,7 +295,8 @@ public class Ment implements Runnable {
                     } else if (cmd.startsWith("DoInteractClick")) {
                         String[] args = cmd.split("\\|");
                         if (args.length == 4) {
-                            boolean sw = DoInteractClick(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+                            Coord mc = new Coord(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+                            boolean sw = DoInteractClick(mc, Integer.parseInt(args[3]));
                             send("DoInteractClick|" + sw);
                         } else {
                             send("!DoInteractClick|wrong_params");
@@ -336,6 +438,28 @@ public class Ment implements Runnable {
             }
         });
 
+        Console.setscmd("bstarve", new Console.Command() {
+            public void run(Console cons, String[] args) {
+                try {
+                    botThread = new Thread(new Bstarve());
+                    botThread.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Console.setscmd("m", new Console.Command() {
+            public void run(Console cons, String[] args) {
+                try {
+                    botThread = new Thread(new Mussel());
+                    botThread.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         Console.setscmd("stop", new Console.Command() {
             public void run(Console cons, String[] args) {
                 if(botThread != null) {
@@ -359,10 +483,9 @@ public class Ment implements Runnable {
         return true;
     }
 
-    public boolean DoInteractClick(int x, int y, int modflags) {
+    public boolean DoInteractClick(Coord mc, int modflags) {
         if (ui.mainview != null) {
-            Coord c = new Coord(x, y);
-            ui.mainview.wdgmsg("itemact", GetCenterScreenCoord(), c, modflags);
+            ui.mainview.wdgmsg("itemact", GetCenterScreenCoord(), mc, modflags);
             return true;
         }
         return false;
